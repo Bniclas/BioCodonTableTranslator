@@ -1,115 +1,121 @@
 package application;
 
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Vector;
 
 public class biocodonencoder {
 	
-	public static final HashMap<String, String> RNAcodonTable = new HashMap<String, String>();
-	public static final HashMap<String, String> inverseRNAcodonTable = new HashMap<String, String>();
 	
-	public static void reset() {
+	@SuppressWarnings("serial")
+	static final Map<String , String> RNAcodonTable = new HashMap<String , String>() {{
 		/*
 			A - Start
 		*/
-		RNAcodonTable.put("AGG", "Arg");
-		RNAcodonTable.put("AGA", "Arg");
-		RNAcodonTable.put("AGC", "Ser");
-		RNAcodonTable.put("AGU", "Ser");
+		put("AGG", "Arg");
+		put("AGA", "Arg");
+		put("AGC", "Ser");
+		put("AGU", "Ser");
 		
-		RNAcodonTable.put("AAG", "Lys");
-		RNAcodonTable.put("AAA", "Lys");
-		RNAcodonTable.put("AAC", "Asn");
-		RNAcodonTable.put("AAU", "Asn");
+		put("AAG", "Lys");
+		put("AAA", "Lys");
+		put("AAC", "Asn");
+		put("AAU", "Asn");
 		
-		RNAcodonTable.put("ACG", "Thr");
-		RNAcodonTable.put("ACA", "Thr");
-		RNAcodonTable.put("ACC", "Thr");
-		RNAcodonTable.put("ACU", "Thr");
+		put("ACG", "Thr");
+		put("ACA", "Thr");
+		put("ACC", "Thr");
+		put("ACU", "Thr");
 		
-		RNAcodonTable.put("AUG", "Met");
-		RNAcodonTable.put("AUA", "Ile");
-		RNAcodonTable.put("AUC", "Ile");
-		RNAcodonTable.put("AUU", "Ile");
+		put("AUG", "Met");
+		put("AUA", "Ile");
+		put("AUC", "Ile");
+		put("AUU", "Ile");
 		
 		/*
 			C - Start
 		*/
-		RNAcodonTable.put("CGG", "Arg");
-		RNAcodonTable.put("CGA", "Arg");
-		RNAcodonTable.put("CGC", "Arg");
-		RNAcodonTable.put("CGU", "Arg");
+		put("CGG", "Arg");
+		put("CGA", "Arg");
+		put("CGC", "Arg");
+		put("CGU", "Arg");
 		
-		RNAcodonTable.put("CAG", "Gln");
-		RNAcodonTable.put("CAA", "Gln");
-		RNAcodonTable.put("CAC", "His");
-		RNAcodonTable.put("CAU", "His");
+		put("CAG", "Gln");
+		put("CAA", "Gln");
+		put("CAC", "His");
+		put("CAU", "His");
 		
-		RNAcodonTable.put("CCG", "Pro");
-		RNAcodonTable.put("CCA", "Pro");
-		RNAcodonTable.put("CCC", "Pro");
-		RNAcodonTable.put("CCU", "Pro");
+		put("CCG", "Pro");
+		put("CCA", "Pro");
+		put("CCC", "Pro");
+		put("CCU", "Pro");
 		
-		RNAcodonTable.put("CUG", "Leu");
-		RNAcodonTable.put("CUA", "Leu");
-		RNAcodonTable.put("CUC", "Leu");
-		RNAcodonTable.put("CUU", "Leu");
+		put("CUG", "Leu");
+		put("CUA", "Leu");
+		put("CUC", "Leu");
+		put("CUU", "Leu");
 		
 		/*
 			U - Start
 		*/
-		RNAcodonTable.put("UGG", "Trp");
-		RNAcodonTable.put("UGA", "STOP");
-		RNAcodonTable.put("UGC", "Cys");
-		RNAcodonTable.put("UGU", "Cys");
+		put("UGG", "Trp");
+		put("UGA", "STOP");
+		put("UGC", "Cys");
+		put("UGU", "Cys");
 		
-		RNAcodonTable.put("UAG", "STOP");
-		RNAcodonTable.put("UAA", "STOP");
-		RNAcodonTable.put("UAC", "Tyr");
-		RNAcodonTable.put("UAU", "Tyr");
+		put("UAG", "STOP");
+		put("UAA", "STOP");
+		put("UAC", "Tyr");
+		put("UAU", "Tyr");
 		
-		RNAcodonTable.put("UCG", "Ser");
-		RNAcodonTable.put("UCA", "Ser");
-		RNAcodonTable.put("UCC", "Ser");
-		RNAcodonTable.put("UCU", "Ser");
+		put("UCG", "Ser");
+		put("UCA", "Ser");
+		put("UCC", "Ser");
+		put("UCU", "Ser");
 		
-		RNAcodonTable.put("UUG", "Leu");
-		RNAcodonTable.put("UUA", "Leu");
-		RNAcodonTable.put("UUC", "Phe");
-		RNAcodonTable.put("UUU", "Phe");	
+		put("UUG", "Leu");
+		put("UUA", "Leu");
+		put("UUC", "Phe");
+		put("UUU", "Phe");	
 		
 		/*
 			G - Start
 		*/
-		RNAcodonTable.put("GGG", "Gly");
-		RNAcodonTable.put("GGA", "Gly");
-		RNAcodonTable.put("GGC", "Gly");
-		RNAcodonTable.put("GGU", "Gly");
+		put("GGG", "Gly");
+		put("GGA", "Gly");
+		put("GGC", "Gly");
+		put("GGU", "Gly");
 		
-		RNAcodonTable.put("GAG", "Glu");
-		RNAcodonTable.put("GAA", "Glu");
-		RNAcodonTable.put("GAC", "Asp");
-		RNAcodonTable.put("GAU", "Asp");
+		put("GAG", "Glu");
+		put("GAA", "Glu");
+		put("GAC", "Asp");
+		put("GAU", "Asp");
 		
-		RNAcodonTable.put("GCG", "Ala");
-		RNAcodonTable.put("GCA", "Ala");
-		RNAcodonTable.put("GCC", "Ala");
-		RNAcodonTable.put("GCU", "Ala");
+		put("GCG", "Ala");
+		put("GCA", "Ala");
+		put("GCC", "Ala");
+		put("GCU", "Ala");
 		
-		RNAcodonTable.put("GUG", "Val");
-		RNAcodonTable.put("GUA", "Val");
-		RNAcodonTable.put("GUC", "Val");
-		RNAcodonTable.put("GUU", "Val");			
-	}
+		put("GUG", "Val");
+		put("GUA", "Val");
+		put("GUC", "Val");
+		put("GUU", "Val");	
+	}};
+	
+
 	
 	public static void encodeRNA( String[] args ) {
-		int partCounter = 1;
+		int partCounter = 0;
 		Vector<String> rnaParts = new Vector<String>();
 		String codonGet = "";
 		String encodedRNA = "";
 		encodedRNA = encodedRNA + "[" + partCounter + "]> ";
 		
-		if ( args[0] == null || args[0].length() % 3 != 0 ) {
+		if ( args.length == 0 ) {
+			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
+			return;
+		}
+		else if( args[0].length() % 3 != 0 ) {
 			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
 			return;
 		}
@@ -124,69 +130,42 @@ public class biocodonencoder {
 				System.out.println("Der folgende RNA-Part existiert nicht: " + rnaParts.get(i) );
 				continue;
 			}
+			if ( codonGet == "Met" ) {
+				++partCounter;
+				encodedRNA = encodedRNA + "\n";
+				encodedRNA = encodedRNA + "[" + partCounter + "]> ";
+				encodedRNA = encodedRNA + codonGet + "-";
+				continue;
+			}
+			
 			encodedRNA = encodedRNA + codonGet;
+			if ( i != rnaParts.size()-1 ) {
+				encodedRNA = encodedRNA + "-";
+			}
+
 			
 			if ( codonGet == "STOP" ) {
-				partCounter++;
+				++partCounter;
 				encodedRNA = encodedRNA + "\n";
 				encodedRNA = encodedRNA + "[" + partCounter + "]> ";
 				continue;
 			}
+			
 			
 			if ( ( i != 0 && RNAcodonTable.get( rnaParts.get(i-1) ) == "STOP" && codonGet != "Met" ) || ( i == 0 && codonGet != "Met") ) {
 				System.out.println("Fehler im RNA-Code: Abschnitt " + partCounter + " beginnt nicht mit Methionine.");
 			}
-
-			if ( i != rnaParts.size()-1 ) {
-				encodedRNA = encodedRNA + "-";
+			
+			if ( ( i != 0 && RNAcodonTable.get( rnaParts.get(i-1) ) != "STOP" && codonGet == "Met" ) ) {
+				System.out.println("Fehler im RNA-Code: Abschnitt " + (partCounter) + " endete nicht mit einem STOP-Code.");
 			}
+
+	
 		}
 		
-		
 		System.out.println( encodedRNA );
+		
 	}
 	
-	public static void encodeInverseRNA( String[] args ) {
-		int partCounter = 1;
-		Vector<String> rnaParts = new Vector<String>();
-		String codonGet = "";
-		String encodedRNA = "";
-		encodedRNA = encodedRNA + "[" + partCounter + "]> ";
-		
-		if ( args[0] == null || args[0].length() % 3 != 0 ) {
-			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
-			return;
-		}
-		
-		for ( int i=0; i<args[0].length(); i+=3 ) {
-			rnaParts.add( args[0].substring( i, i+3 ) );
-		}
-		
-		for ( int i=0; i<rnaParts.size(); i++ ) {
-			codonGet = inverseRNAcodonTable.get( rnaParts.get(i) );
-			if ( codonGet == null ) {
-				System.out.println("Der folgende RNA-Part existiert nicht: " + rnaParts.get(i) );
-				continue;
-			}
-			encodedRNA = encodedRNA + codonGet;
-			
-			if ( codonGet == "STOP" ) {
-				partCounter++;
-				encodedRNA = encodedRNA + "\n";
-				encodedRNA = encodedRNA + "[" + partCounter + "]> ";
-				continue;
-			}
-			
-			if ( ( i != 0 && inverseRNAcodonTable.get( rnaParts.get(i-1) ) == "STOP" && codonGet != "Met" ) || ( i == 0 && codonGet != "Met") ) {
-				System.out.println("Fehler im RNA-Code: Abschnitt " + partCounter + " beginnt nicht mit Methionine.");
-			}
 
-			if ( i != rnaParts.size()-1 ) {
-				encodedRNA = encodedRNA + "-";
-			}
-		}
-		
-		
-		System.out.println( encodedRNA );
-	}
 }

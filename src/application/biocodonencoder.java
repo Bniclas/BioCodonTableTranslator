@@ -108,7 +108,97 @@ public class biocodonencoder {
 	}};
 	
 	static final Map<String , String> DNAcodonTable = new HashMap<String , String>() {{
+		/*
+			A - Start
+		*/
+		put("AGG", "Arg");
+		put("AGA", "Arg");
+		put("AGC", "Ser");
+		put("AGT", "Ser");
 		
+		put("AAG", "Lys");
+		put("AAA", "Lys");
+		put("AAC", "Asn");
+		put("AAT", "Asn");
+		
+		put("ACG", "Thr");
+		put("ACA", "Thr");
+		put("ACC", "Thr");
+		put("ACT", "Thr");
+		
+		put("ATG", "Met");
+		put("ATA", "Ile");
+		put("ATC", "Ile");
+		put("ATT", "Ile");
+		
+		/*
+			C - Start
+		*/
+		put("CGG", "Arg");
+		put("CGA", "Arg");
+		put("CGC", "Arg");
+		put("CGT", "Arg");
+		
+		put("CAG", "Gln");
+		put("CAA", "Gln");
+		put("CAC", "His");
+		put("CAT", "His");
+		
+		put("CCG", "Pro");
+		put("CCA", "Pro");
+		put("CCC", "Pro");
+		put("CCT", "Pro");
+		
+		put("CTG", "Leu");
+		put("CTA", "Leu");
+		put("CTC", "Leu");
+		put("CTT", "Leu");
+		
+		/*
+			T - Start
+		*/
+		put("TGG", "Trp");
+		put("TGA", stopCode);
+		put("TGC", "Cys");
+		put("TGT", "Cys");
+		
+		put("TAG", stopCode);
+		put("TAA", stopCode);
+		put("TAC", "Tyr");
+		put("TAT", "Tyr");
+		
+		put("TCG", "Ser");
+		put("TCA", "Ser");
+		put("TCC", "Ser");
+		put("TCT", "Ser");
+		
+		put("TTG", "Leu");
+		put("TTA", "Leu");
+		put("TTC", "Phe");
+		put("TTT", "Phe");	
+		
+		/*
+			G - Start
+		*/
+		put("GGG", "Gly");
+		put("GGA", "Gly");
+		put("GGC", "Gly");
+		put("GGT", "Gly");
+		
+		put("GAG", "Glu");
+		put("GAA", "Glu");
+		put("GAC", "Asp");
+		put("GAT", "Asp");
+		
+		put("GCG", "Ala");
+		put("GCA", "Ala");
+		put("GCC", "Ala");
+		put("GCT", "Ala");
+		
+		put("GTG", "Val");
+		put("GTA", "Val");
+		put("GTC", "Val");
+		put("GTT", "Val");	
 	}};
 	
 	static final Map<String , String> DNAcodonTableInverse = new HashMap<String , String>() {{
@@ -146,7 +236,11 @@ public class biocodonencoder {
 			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
 			return;
 		}
-		else if( args[0].length() % 3 != 0 ) {
+		
+		args[0] = args[0].replaceAll(",", "");
+		args[0] = args[0].replaceAll(";", "");
+		
+		if( args[0].length() % 3 != 0 ) {
 			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
 			return;
 		}
@@ -161,18 +255,19 @@ public class biocodonencoder {
 				System.out.println("Der folgende RNA-Part existiert nicht: " + rnaParts.get(i) );
 				continue;
 			}
-			if ( codonGet == "Met" ) {
+			if ( codonGet == "Met" && i != 0 ) {
 				++partCounter;
 				encodedRNA = encodedRNA + "\n";
 				encodedRNA = encodedRNA + "[" + partCounter + "]> ";
+				encodedRNA = encodedRNA + codonGet;
 			}
 			else if ( codonGet == stopCode ) {
 				++partCounter;
-				encodedRNA = encodedRNA + "\n";
-				encodedRNA = encodedRNA + "[" + partCounter + "]> ";
+			}
+			else {
+				encodedRNA = encodedRNA + codonGet;
 			}
 			
-			encodedRNA = encodedRNA + codonGet;
 			
 			if ( i != rnaParts.size()-1 && codonGet != stopCode ) {
 				encodedRNA = encodedRNA + "-";

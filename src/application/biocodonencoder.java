@@ -205,44 +205,35 @@ public class biocodonencoder {
 		
 	}};
 
-	
-	@SuppressWarnings("unchecked")
-	public static void encode( String[] args, boolean isRNA, boolean inverse ) {
+	public static String nucleinToAmino( String[] args, boolean isRNA ) {
 		HashMap<String, String> mapToUse = new HashMap<>();
 		if ( isRNA == true ) {
-			if ( inverse == false ) {
-				mapToUse.putAll( RNAcodonTable );  
-			}
-			else {
-				mapToUse.putAll( RNAcodonTableInverse );  
-			}
+			mapToUse.putAll( RNAcodonTable );  
 		}
 		else {
-			if ( inverse == false ) {
-				mapToUse.putAll( DNAcodonTable );  
-			}
-			else {
-				mapToUse.putAll( DNAcodonTableInverse );  
-			}
+			mapToUse.putAll( DNAcodonTable );  
 		}
 
-		int partCounter = 1;
+		int partCounter = 0;
 		Vector<String> rnaParts = new Vector<String>();
-		String codonGet = "";
+		String codon = null;
+		String prevCodon = null;
+		String nextCodon = null;
 		String encodedRNA = "";
-		encodedRNA = encodedRNA + "[" + partCounter + "]> ";
+		encodedRNA = encodedRNA + "> ";
 		
 		if ( args.length == 0 ) {
 			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
-			return;
+			return encodedRNA;
 		}
 		
 		args[0] = args[0].replaceAll(",", "");
 		args[0] = args[0].replaceAll(";", "");
+		args[0] = args[0].replaceAll(" ", "");
 		
 		if( args[0].length() % 3 != 0 ) {
 			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
-			return;
+			return encodedRNA;
 		}
 		
 		for ( int i=0; i<args[0].length(); i+=3 ) {
@@ -250,63 +241,69 @@ public class biocodonencoder {
 		}
 		
 		for ( int i=0; i<rnaParts.size(); i++ ) {
-			codonGet = mapToUse.get( rnaParts.get(i) );
-			if ( codonGet == null ) {
+			codon = mapToUse.get( rnaParts.get(i) );
+			if ( i != 0 ) {
+				prevCodon = mapToUse.get( rnaParts.get(i-1) );
+			}
+			else {
+				prevCodon = null;
+			}
+			
+			if ( i != rnaParts.size() - 1) {
+				nextCodon = mapToUse.get( rnaParts.get(i+1) );
+			}
+			else {
+				nextCodon = null;
+			}
+
+			if ( codon == null ) {
 				System.out.println("Der folgende RNA-Part existiert nicht: " + rnaParts.get(i) );
 				continue;
 			}
-			if ( codonGet == "Met" && i != 0 ) {
+			if ( codon == "Met" && i != 0 ) {
 				++partCounter;
 				encodedRNA = encodedRNA + "\n";
-				encodedRNA = encodedRNA + "[" + partCounter + "]> ";
-				encodedRNA = encodedRNA + codonGet;
+				encodedRNA = encodedRNA + "> ";
+				encodedRNA = encodedRNA + codon;
 			}
-			else if ( codonGet == stopCode ) {
+			else if ( codon == stopCode ) {
 				++partCounter;
 			}
 			else {
-				encodedRNA = encodedRNA + codonGet;
+				encodedRNA = encodedRNA + codon;
 			}
 			
-			
-			if ( i != rnaParts.size()-1 && codonGet != stopCode ) {
+
+			if ( i != rnaParts.size()-1 && codon != stopCode && nextCodon != stopCode && nextCodon != "Met" ) {
 				encodedRNA = encodedRNA + "-";
 			}
 
 			
-			if ( ( i != 0 && mapToUse.get( rnaParts.get(i-1) ) == stopCode && codonGet != "Met" ) || ( i == 0 && codonGet != "Met") ) {
+			if ( ( i != 0 && prevCodon == stopCode && codon != "Met" ) || ( i == 0 && codon != "Met") ) {
 				System.out.println("Fehler im RNA-Code: Abschnitt " + partCounter + " beginnt nicht mit Methionine.");
 			}
 			
-			if ( ( i != 0 && mapToUse.get( rnaParts.get(i-1) ) != stopCode && codonGet == "Met" ) ) {
+			if ( ( i != 0 && prevCodon != stopCode && codon == "Met" ) ) {
 				System.out.println("Fehler im RNA-Code: Abschnitt " + (partCounter-1) + " endete nicht mit einem STOP-Code.");
 			}
 
-			if ( i == rnaParts.size() && codonGet != stopCode ) {
+			if ( i == rnaParts.size() && codon != stopCode ) {
 				System.out.println("Fehler im RNA-Code: Abschnitt " + (partCounter) + " endete nicht mit einem STOP-Code.");
 			}
 		}
 		
-		System.out.println( encodedRNA );
+		return encodedRNA;
 	}
 	
-	public static void encodeRNA( String[] args ) {
+	public static String encodeRNA( String[] args ) {
 		System.out.println(">>>>>>>>>> RNA Analyse wird gestartet:\n\n");
-		encode(args, true, false);
+		return nucleinToAmino(args, true);
 	}
 	
-	public static void encodeRNAInverse( String[] args ) {
-		System.out.println(">>>>>>>>>> RNA Inverse Analyse wird gestartet:\n\n");
-		encode(args, true, true);
-	}
 	
-	public static void encodeDNA( String[] args ) {
+	public static String encodeDNA( String[] args ) {
 		System.out.println(">>>>>>>>>> DNA Analyse wird gestartet:\n\n");
-		encode(args, false, false);
+		return nucleinToAmino(args, false);
 	}
 	
-	public static void encodeDNAInverse( String[] args ) {
-		System.out.println(">>>>>>>>>> DNA Inverse Analyse wird gestartet:\n\n");
-		encode(args, false, true);
-	}
 }

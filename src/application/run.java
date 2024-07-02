@@ -1,16 +1,30 @@
 package application;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class run {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		
 		String[] rnaExample = new String[1];
-		rnaExample[0] = "AUG,AUA,AUC,UAG,AUG,UAG";
-		biocodonencoder.encodeRNA( rnaExample );
+		rnaExample[0] = "AUG,AUA,AUC,UAG,AUG,UAG,AUG,UUG,UUC,AUG,UUC,CCU,UAG";
+		for ( int i=0; i<10000; i++) {
+			rnaExample[0] = rnaExample[0] + "AUG,AUA,AUC,UAG,AUG,UAG,AUG,UUG,UUC,AUG,UUC,CCU,UAG";
+		}
 		
+		String result = biocodonencoder.encodeRNA( rnaExample );
+		System.out.println( result );
+		
+		FileWriter myWriter = new FileWriter("save.txt");
+		myWriter.write(result);
+		myWriter.close();
+		
+		/*
 		String[] dnaExample = new String[1];
-		dnaExample[0] = "TTTTTAAATTAGAATAGTTGA";
+		dnaExample[0] = "TTT;TTA;AAT;TAG;AAT;AGT;TGA";
 		biocodonencoder.encodeDNA( dnaExample );
+		*/
 	}
 
 }

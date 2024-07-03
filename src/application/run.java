@@ -24,7 +24,7 @@ public class run {
 		biocodonencoder.encodeDNA( dnaExample );
 		*/
 		
-		// menu menu = new menu();
+		menu menu = new menu();
 	}
 
 }

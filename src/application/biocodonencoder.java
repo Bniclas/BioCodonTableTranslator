@@ -6,11 +6,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Vector;
 
-/*
-import org.junit.jupiter.api.Test;
-import static org.junit.Assert.assertEquals;
-*/
-
 public class biocodonencoder {
 	static final Map<String , String> RNAcodonTable = new HashMap<String , String>();
 	static final Map<String , String> DNAcodonTable = new HashMap<String , String>();
@@ -20,19 +15,32 @@ public class biocodonencoder {
 	private static final String stopCode = "STOP";
 	@SuppressWarnings("serial")
 	static final Map<Integer, String> organismSelection = new HashMap<Integer, String>() {{
-		put(1, "Human (Standard)");
+		put(1, "Standard");
 		put(2, "Vertebrate mitochondrial");
 		put(3, "Yeast mitochondrial");
 		put(4, "Protozoan");
 		put(5, "Invertebrate mitochondrial");
 		put(6, "Ciliate");
-		put(7, "Echinoderm/Flatworm");
-		put(8, "Eplotid nuclear");
-		put(9, "Bacterial/Plant Plastid/Archael");
-		put(10, "Alternative yeast nuclear");
-		put(11, "Alternative flatworm mitochondira");
-		put(12, "Blepharisma nuclear");
-		put(13, "Chlorophycean mitochondrial");
+		put(9, "Echinoderm/Flatworm");
+		put(10, "Eplotid nuclear");
+		put(11, "Bacterial/Plant Plastid/Archael");
+		put(12, "Alternative yeast nuclear");
+		put(13, "Alternative flatworm mitochondira");
+		put(14, "Blepharisma nuclear");
+		put(15, "Chlorophycean mitochondrial");
+		put(16, "Chlorophycean mitochondrial");
+		put(21, "Trematode mitochondrial");
+		put(22, "Scenedesmus obliquus mitochondiral");
+		put(23, "Thraustochytrium mitochondrial");
+		put(24, "Pterobranchia mitochondiral");
+		put(25, "Candidate division SR1 and Gracilibacteria");
+		put(26, "Pachysolen tannophilus nuclear");
+		put(27, "Karyorelict nuclear");
+		put(28, "Condylostoma nuclear");
+		put(29, "Mesodinium nuclear");
+		put(30, "Peritrich nuclear");
+		put(31, "Blastocrithidia nuclear");
+		put(33, "Cephalodscidae mitochondrial code");
 	}};
 	
 	private static int selectedOrganism = 1;
@@ -44,8 +52,8 @@ public class biocodonencoder {
 	
 	public static void initOrganismNA() {
 		Map<String, String> overwrite = new HashMap<String , String> (){{
-			put("AGA","STOP");
-			put("AGG","STOP");
+			put("AGA",stopCode);
+			put("AGG",stopCode);
 			put("A#A","Met");
 			put("#GA","Trp");
 		}};
@@ -82,7 +90,133 @@ public class biocodonencoder {
 		}};
 		overwriteNAbyOrganism.put(6, overwrite);
 		
+		overwrite = new HashMap<String , String> (){{
+			put("AAA","Asn");
+			put("AGA","Ser");
+			put("AGG","Ser");
+			put("#GA","Trp");
+		}};
+		overwriteNAbyOrganism.put(9, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#GA","Cys");
+		}};
+		overwriteNAbyOrganism.put(10, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
 
+		}};
+		overwriteNAbyOrganism.put(11, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("C#G","Ser");
+		}};
+		overwriteNAbyOrganism.put(12, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("AGA","Gly");
+			put("AGG","Gly");
+			put("A#A","Met");
+			put("#GA","Trp");
+		}};
+		overwriteNAbyOrganism.put(13, overwrite);
+	
+		overwrite = new HashMap<String , String> (){{
+			put("AAA","Asn");
+			put("AGA","Ser");
+			put("AGG","Ser");
+			put("#AA","Tyr");
+			put("#GA","Trp");
+		}};
+		overwriteNAbyOrganism.put(14, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#AG","Gln");
+		}};
+		overwriteNAbyOrganism.put(15, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#AG","Leu");
+		}};
+		overwriteNAbyOrganism.put(16, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#GA","Trp");
+			put("A#A","Met");
+			put("AGA","Ser");
+			put("AGG","Ser");
+			put("AAA","Asn");
+		}};
+		overwriteNAbyOrganism.put(21, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#CA",stopCode);
+			put("#AG","Leu");
+		}};
+		overwriteNAbyOrganism.put(22, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("##A",stopCode);
+		}};
+		overwriteNAbyOrganism.put(23, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("AGA","Ser");
+			put("AGG","Lys");
+			put("#GA","Trp");
+		}};
+		overwriteNAbyOrganism.put(24, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#GA","Gly");
+		}};
+		overwriteNAbyOrganism.put(25, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("C#G","Ala");
+		}};
+		overwriteNAbyOrganism.put(26, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#AA","Ser");
+			put("#AG","Lys");
+			put("#GA","Trp/"+stopCode);
+		}};
+		overwriteNAbyOrganism.put(27, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#AA","Gln/"+stopCode);
+			put("#AG","Gln/"+stopCode);
+			put("#GA","Trp/"+stopCode);
+		}};
+		overwriteNAbyOrganism.put(28, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#AA","Tyr");
+			put("#AG","Tyr");
+		}};
+		overwriteNAbyOrganism.put(29, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#AA","Glu");
+			put("#AG","Glu");
+		}};
+		overwriteNAbyOrganism.put(30, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#AA","Glu/"+stopCode);
+			put("#AG","Glu/"+stopCode);
+			put("#GA","Trp");
+		}};
+		overwriteNAbyOrganism.put(31, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("AGA","Ser");
+			put("AGG","Lys");
+			put("#AA","Tyr");
+			put("#GA","Trp");
+		}};
+		overwriteNAbyOrganism.put(33, overwrite);
 	}
 	
 	public static void overwriteOrganismNA() {
@@ -292,7 +426,7 @@ public class biocodonencoder {
 				encodedRNA = encodedRNA + "-";
 			}
 
-			
+			/*
 			if ( ( i != 0 && prevCodon == stopCode && codon != "Met" ) || ( i == 0 && codon != "Met") ) {
 				System.out.println("Fehler im RNA-Code: Abschnitt " + partCounter + " beginnt nicht mit Methionine.");
 			}
@@ -304,6 +438,7 @@ public class biocodonencoder {
 			if ( i == rnaParts.size() && codon != stopCode ) {
 				System.out.println("Fehler im RNA-Code: Abschnitt " + (partCounter) + " endete nicht mit einem STOP-Code.");
 			}
+			*/
 		}
 		
 		return encodedRNA;
@@ -320,14 +455,5 @@ public class biocodonencoder {
 		return nucleinToAmino(args, false);
 	}
 	
-	/*
-	@Test
-	void testRNAencode(){
-		biocodonencoder.prepare(1);
-		String[] rnaExample = new String[1];
-		rnaExample[0] = "AUG,AUA,AUC,UAG";
-		
-	    assertEquals("> Met-Ile-Ile-Amber", biocodonencoder.encodeRNA( rnaExample ) );
-	}*/
 	
 }

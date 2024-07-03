@@ -7,6 +7,7 @@ public class run {
 
 	public static void main(String[] args) throws IOException {
 		
+		biocodonencoder.prepare(1);
 		String[] rnaExample = new String[1];
 		rnaExample[0] = "AUG,AUA,AUC,UAG,AUG,UAG,AUG,UUG,UUC,AUG,UUC,CCU,UAA";
 		
@@ -23,7 +24,7 @@ public class run {
 		biocodonencoder.encodeDNA( dnaExample );
 		*/
 		
-		menu menu = new menu();
+		// menu menu = new menu();
 	}
 
 }

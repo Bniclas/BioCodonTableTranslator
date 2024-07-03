@@ -1,209 +1,206 @@
 package application;
 
 import java.util.Map;
+
+
 import java.util.HashMap;
 import java.util.Vector;
 
+/*
+import org.junit.jupiter.api.Test;
+import static org.junit.Assert.assertEquals;
+*/
+
 public class biocodonencoder {
+	static final Map<String , String> RNAcodonTable = new HashMap<String , String>();
+	static final Map<String , String> DNAcodonTable = new HashMap<String , String>();
 	
+	static final Map<String, String> CodonTableToUse = new HashMap<String , String>();
 	
-	public static final String stopCode = "STOP";
+	private static final String stopCode = "STOP";
 	@SuppressWarnings("serial")
-	static final Map<String , String> RNAcodonTable = new HashMap<String , String>() {{
+	static final Map<Integer, String> organismSelection = new HashMap<Integer, String>() {{
+		put(1, "Human (Standard)");
+		put(2, "Vertebrate mitochondrial");
+		put(3, "Yeast mitochondrial");
+		put(4, "Protozoan");
+		put(5, "Invertebrate mitochondrial");
+		put(6, "Ciliate");
+		put(7, "Echinoderm/Flatworm");
+		put(8, "Eplotid nuclear");
+		put(9, "Bacterial/Plant Plastid/Archael");
+		put(10, "Alternative yeast nuclear");
+		put(11, "Alternative flatworm mitochondira");
+		put(12, "Blepharisma nuclear");
+		put(13, "Chlorophycean mitochondrial");
+	}};
+	
+	private static int selectedOrganism = 1;
+	public static void setOrganism( int organismNumber ) {
+		selectedOrganism = organismNumber;
+	}
+	
+	static final Map<Integer, Object> overwriteNAbyOrganism = new HashMap<Integer, Object>();
+	
+	public static void initOrganismNA() {
+		Map<String, String> overwrite = new HashMap<String , String> (){{
+			put("AGA","STOP");
+			put("AGG","STOP");
+			put("A#A","Met");
+			put("#GA","Trp");
+		}};
+		overwriteNAbyOrganism.put(2, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("A#A","Met");
+			put("C##","Thr");
+			put("C#C","Thr");
+			put("C#A","Thr");
+			put("C#G","Thr");
+			put("#GA","Trp");
+			put("CGA",null);
+			put("CGC",null);
+		}};
+		overwriteNAbyOrganism.put(3, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("#G#","Met");
+		}};
+		overwriteNAbyOrganism.put(4, overwrite);
+		
+		overwrite = new HashMap<String , String> (){{
+			put("AGA","Ser");
+			put("AGG","Ser");
+			put("A#A","Met");
+			put("#GA","Trp");
+		}};
+		overwriteNAbyOrganism.put(5, overwrite);
+	
+		overwrite = new HashMap<String , String> (){{
+			put("#AA","Gln");
+			put("#AG","Gln");
+		}};
+		overwriteNAbyOrganism.put(6, overwrite);
+		
+
+	}
+	
+	public static void overwriteOrganismNA() {
+		if ( overwriteNAbyOrganism.get( selectedOrganism ) == null ) {
+			return;
+		}
+		
+		Map<String, String> overwriteData = (HashMap) overwriteNAbyOrganism.get( selectedOrganism );
+		
+		
+		for ( var entry : overwriteData.entrySet() ) {
+			String key = entry.getKey().replaceAll( "#", "T" );
+			DNAcodonTable.put( key, entry.getValue() );
+			
+			key = entry.getKey().replaceAll( "#", "U" );
+			RNAcodonTable.put( key, entry.getValue() );
+		}
+		
+	}
+
+	public static void writeBasicRNAandDNA() {
 		/*
 			A - Start
 		*/
-		put("AGG", "Arg");
-		put("AGA", "Arg");
-		put("AGC", "Ser");
-		put("AGU", "Ser");
+		RNAcodonTable.put("AGG", "Arg");
+		RNAcodonTable.put("AGA", "Arg");
+		RNAcodonTable.put("AGC", "Ser");
+		RNAcodonTable.put("AGU", "Ser");
 		
-		put("AAG", "Lys");
-		put("AAA", "Lys");
-		put("AAC", "Asn");
-		put("AAU", "Asn");
+		RNAcodonTable.put("AAG", "Lys");
+		RNAcodonTable.put("AAA", "Lys");
+		RNAcodonTable.put("AAC", "Asn");
+		RNAcodonTable.put("AAU", "Asn");
 		
-		put("ACG", "Thr");
-		put("ACA", "Thr");
-		put("ACC", "Thr");
-		put("ACU", "Thr");
+		RNAcodonTable.put("ACG", "Thr");
+		RNAcodonTable.put("ACA", "Thr");
+		RNAcodonTable.put("ACC", "Thr");
+		RNAcodonTable.put("ACU", "Thr");
 		
-		put("AUG", "Met");
-		put("AUA", "Ile");
-		put("AUC", "Ile");
-		put("AUU", "Ile");
+		RNAcodonTable.put("AUG", "Met");
+		RNAcodonTable.put("AUA", "Ile");
+		RNAcodonTable.put("AUC", "Ile");
+		RNAcodonTable.put("AUU", "Ile");
 		
 		/*
 			C - Start
 		*/
-		put("CGG", "Arg");
-		put("CGA", "Arg");
-		put("CGC", "Arg");
-		put("CGU", "Arg");
+		RNAcodonTable.put("CGG", "Arg");
+		RNAcodonTable.put("CGA", "Arg");
+		RNAcodonTable.put("CGC", "Arg");
+		RNAcodonTable.put("CGU", "Arg");
 		
-		put("CAG", "Gln");
-		put("CAA", "Gln");
-		put("CAC", "His");
-		put("CAU", "His");
+		RNAcodonTable.put("CAG", "Gln");
+		RNAcodonTable.put("CAA", "Gln");
+		RNAcodonTable.put("CAC", "His");
+		RNAcodonTable.put("CAU", "His");
 		
-		put("CCG", "Pro");
-		put("CCA", "Pro");
-		put("CCC", "Pro");
-		put("CCU", "Pro");
+		RNAcodonTable.put("CCG", "Pro");
+		RNAcodonTable.put("CCA", "Pro");
+		RNAcodonTable.put("CCC", "Pro");
+		RNAcodonTable.put("CCU", "Pro");
 		
-		put("CUG", "Leu");
-		put("CUA", "Leu");
-		put("CUC", "Leu");
-		put("CUU", "Leu");
+		RNAcodonTable.put("CUG", "Leu");
+		RNAcodonTable.put("CUA", "Leu");
+		RNAcodonTable.put("CUC", "Leu");
+		RNAcodonTable.put("CUU", "Leu");
 		
 		/*
 			U - Start
 		*/
-		put("UGG", "Trp");
-		put("UGA", stopCode);
-		put("UGC", "Cys");
-		put("UGU", "Cys");
+		RNAcodonTable.put("UGG", "Trp");
+		RNAcodonTable.put("UGA", stopCode);
+		RNAcodonTable.put("UGC", "Cys");
+		RNAcodonTable.put("UGU", "Cys");
 		
-		put("UAG", stopCode);
-		put("UAA", stopCode);
-		put("UAC", "Tyr");
-		put("UAU", "Tyr");
+		RNAcodonTable.put("UAG", stopCode);
+		RNAcodonTable.put("UAA", stopCode);
+		RNAcodonTable.put("UAC", "Tyr");
+		RNAcodonTable.put("UAU", "Tyr");
 		
-		put("UCG", "Ser");
-		put("UCA", "Ser");
-		put("UCC", "Ser");
-		put("UCU", "Ser");
+		RNAcodonTable.put("UCG", "Ser");
+		RNAcodonTable.put("UCA", "Ser");
+		RNAcodonTable.put("UCC", "Ser");
+		RNAcodonTable.put("UCU", "Ser");
 		
-		put("UUG", "Leu");
-		put("UUA", "Leu");
-		put("UUC", "Phe");
-		put("UUU", "Phe");	
-		
-		/*
-			G - Start
-		*/
-		put("GGG", "Gly");
-		put("GGA", "Gly");
-		put("GGC", "Gly");
-		put("GGU", "Gly");
-		
-		put("GAG", "Glu");
-		put("GAA", "Glu");
-		put("GAC", "Asp");
-		put("GAU", "Asp");
-		
-		put("GCG", "Ala");
-		put("GCA", "Ala");
-		put("GCC", "Ala");
-		put("GCU", "Ala");
-		
-		put("GUG", "Val");
-		put("GUA", "Val");
-		put("GUC", "Val");
-		put("GUU", "Val");	
-	}};
-	
-	static final Map<String , String> RNAcodonTableInverse = new HashMap<String , String>() {{
-		
-	}};
-	
-	static final Map<String , String> DNAcodonTable = new HashMap<String , String>() {{
-		/*
-			A - Start
-		*/
-		put("AGG", "Arg");
-		put("AGA", "Arg");
-		put("AGC", "Ser");
-		put("AGT", "Ser");
-		
-		put("AAG", "Lys");
-		put("AAA", "Lys");
-		put("AAC", "Asn");
-		put("AAT", "Asn");
-		
-		put("ACG", "Thr");
-		put("ACA", "Thr");
-		put("ACC", "Thr");
-		put("ACT", "Thr");
-		
-		put("ATG", "Met");
-		put("ATA", "Ile");
-		put("ATC", "Ile");
-		put("ATT", "Ile");
-		
-		/*
-			C - Start
-		*/
-		put("CGG", "Arg");
-		put("CGA", "Arg");
-		put("CGC", "Arg");
-		put("CGT", "Arg");
-		
-		put("CAG", "Gln");
-		put("CAA", "Gln");
-		put("CAC", "His");
-		put("CAT", "His");
-		
-		put("CCG", "Pro");
-		put("CCA", "Pro");
-		put("CCC", "Pro");
-		put("CCT", "Pro");
-		
-		put("CTG", "Leu");
-		put("CTA", "Leu");
-		put("CTC", "Leu");
-		put("CTT", "Leu");
-		
-		/*
-			T - Start
-		*/
-		put("TGG", "Trp");
-		put("TGA", stopCode);
-		put("TGC", "Cys");
-		put("TGT", "Cys");
-		
-		put("TAG", stopCode);
-		put("TAA", stopCode);
-		put("TAC", "Tyr");
-		put("TAT", "Tyr");
-		
-		put("TCG", "Ser");
-		put("TCA", "Ser");
-		put("TCC", "Ser");
-		put("TCT", "Ser");
-		
-		put("TTG", "Leu");
-		put("TTA", "Leu");
-		put("TTC", "Phe");
-		put("TTT", "Phe");	
+		RNAcodonTable.put("UUG", "Leu");
+		RNAcodonTable.put("UUA", "Leu");
+		RNAcodonTable.put("UUC", "Phe");
+		RNAcodonTable.put("UUU", "Phe");	
 		
 		/*
 			G - Start
 		*/
-		put("GGG", "Gly");
-		put("GGA", "Gly");
-		put("GGC", "Gly");
-		put("GGT", "Gly");
+		RNAcodonTable.put("GGG", "Gly");
+		RNAcodonTable.put("GGA", "Gly");
+		RNAcodonTable.put("GGC", "Gly");
+		RNAcodonTable.put("GGU", "Gly");
 		
-		put("GAG", "Glu");
-		put("GAA", "Glu");
-		put("GAC", "Asp");
-		put("GAT", "Asp");
+		RNAcodonTable.put("GAG", "Glu");
+		RNAcodonTable.put("GAA", "Glu");
+		RNAcodonTable.put("GAC", "Asp");
+		RNAcodonTable.put("GAU", "Asp");
 		
-		put("GCG", "Ala");
-		put("GCA", "Ala");
-		put("GCC", "Ala");
-		put("GCT", "Ala");
+		RNAcodonTable.put("GCG", "Ala");
+		RNAcodonTable.put("GCA", "Ala");
+		RNAcodonTable.put("GCC", "Ala");
+		RNAcodonTable.put("GCU", "Ala");
 		
-		put("GTG", "Val");
-		put("GTA", "Val");
-		put("GTC", "Val");
-		put("GTT", "Val");	
-	}};
-	
-	static final Map<String , String> DNAcodonTableInverse = new HashMap<String , String>() {{
+		RNAcodonTable.put("GUG", "Val");
+		RNAcodonTable.put("GUA", "Val");
+		RNAcodonTable.put("GUC", "Val");
+		RNAcodonTable.put("GUU", "Val");	
 		
-	}};
+		for (var entry : RNAcodonTable.entrySet()) {
+			String key = entry.getKey().replaceAll( "U", "T" );
+			DNAcodonTable.put( key, entry.getValue() );
+		}
+	}
 	
 	static final Map<String , String> stopCodonTranslation = new HashMap<String , String>() {{
 		put("TAG", "Amber");
@@ -215,6 +212,13 @@ public class biocodonencoder {
 		put("UGA", "Opal");
 	}};
 
+	public static void prepare( int selectedOrganism ) {
+		setOrganism(selectedOrganism);
+		writeBasicRNAandDNA();
+		initOrganismNA();
+		overwriteOrganismNA();
+	}
+	
 	public static String nucleinToAmino( String[] args, boolean isRNA ) {
 		HashMap<String, String> mapToUse = new HashMap<>();
 		if ( isRNA == true ) {
@@ -315,5 +319,15 @@ public class biocodonencoder {
 		System.out.println(">>>>>>>>>> DNA Analyse wird gestartet:\n\n");
 		return nucleinToAmino(args, false);
 	}
+	
+	/*
+	@Test
+	void testRNAencode(){
+		biocodonencoder.prepare(1);
+		String[] rnaExample = new String[1];
+		rnaExample[0] = "AUG,AUA,AUC,UAG";
+		
+	    assertEquals("> Met-Ile-Ile-Amber", biocodonencoder.encodeRNA( rnaExample ) );
+	}*/
 	
 }

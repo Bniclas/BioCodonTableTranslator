@@ -8,10 +8,7 @@ public class run {
 	public static void main(String[] args) throws IOException {
 		
 		String[] rnaExample = new String[1];
-		rnaExample[0] = "AUG,AUA,AUC,UAG,AUG,UAG,AUG,UUG,UUC,AUG,UUC,CCU,UAG";
-		for ( int i=0; i<10000; i++) {
-			rnaExample[0] = rnaExample[0] + "AUG,AUA,AUC,UAG,AUG,UAG,AUG,UUG,UUC,AUG,UUC,CCU,UAG";
-		}
+		rnaExample[0] = "AUG,AUA,AUC,UAG,AUG,UAG,AUG,UUG,UUC,AUG,UUC,CCU,UAA";
 		
 		String result = biocodonencoder.encodeRNA( rnaExample );
 		System.out.println( result );
@@ -25,6 +22,8 @@ public class run {
 		dnaExample[0] = "TTT;TTA;AAT;TAG;AAT;AGT;TGA";
 		biocodonencoder.encodeDNA( dnaExample );
 		*/
+		
+		menu menu = new menu();
 	}
 
 }

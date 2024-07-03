@@ -204,6 +204,16 @@ public class biocodonencoder {
 	static final Map<String , String> DNAcodonTableInverse = new HashMap<String , String>() {{
 		
 	}};
+	
+	static final Map<String , String> stopCodonTranslation = new HashMap<String , String>() {{
+		put("TAG", "Amber");
+		put("TAA", "Ochre");
+		put("TGA", "Opal");
+		
+		put("UAG", "Amber");
+		put("UAA", "Ochre");
+		put("UGA", "Opal");
+	}};
 
 	public static String nucleinToAmino( String[] args, boolean isRNA ) {
 		HashMap<String, String> mapToUse = new HashMap<>();
@@ -268,13 +278,13 @@ public class biocodonencoder {
 			}
 			else if ( codon == stopCode ) {
 				++partCounter;
-			}
+				encodedRNA = encodedRNA + stopCodonTranslation.get( rnaParts.get(i) );			}
 			else {
 				encodedRNA = encodedRNA + codon;
 			}
 			
 
-			if ( i != rnaParts.size()-1 && codon != stopCode && nextCodon != stopCode && nextCodon != "Met" ) {
+			if ( i != rnaParts.size()-1 && codon != stopCode && nextCodon != "Met" ) {
 				encodedRNA = encodedRNA + "-";
 			}
 

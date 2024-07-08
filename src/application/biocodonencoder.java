@@ -424,6 +424,16 @@ public class biocodonencoder {
 		
 		for ( int i=0; i<rnaParts.size(); i++ ) {
 			String triplet = rnaParts.get(i);
+			String nextTriplet = "";
+			String prevTriplet = "";
+			
+			if( i+1 < rnaParts.size() ) {
+				nextTriplet = rnaParts.get(i+1);
+			}
+			if( i-1 >= 0 ) {
+				prevTriplet = rnaParts.get(i-1);
+			}
+			
 			codon = codonTable.get( triplet );
 			if ( i != 0 ) {
 				prevCodon = codonTable.get( rnaParts.get(i-1) );
@@ -462,7 +472,7 @@ public class biocodonencoder {
 			}
 			
 
-			if ( i != rnaParts.size()-1 && codon != stopCode && nextCodon != "Met" ) {
+			if ( i < rnaParts.size()-1 && nextTriplet != null && !isInitCodon( nextTriplet ) && nextTriplet != null && !isStopCodon(nextTriplet) ) {
 				decodedNucleinAcid = decodedNucleinAcid + "-";
 			}
 		}

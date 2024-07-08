@@ -18,9 +18,24 @@ public class menu {
 	private static JMenu mainMenu;
 	private static JTextArea Console;
 	private static JTextArea codeInput;
-	private static final Object[] header = new Object[] { "Triplett", "Aminoacid", "STOP", "Init" };
+	private static final Object[] header = new Object[] { "TRIPLET", "AMINO ACID", "STOP", "INIT" };
+	@SuppressWarnings("serial")
 	private static DefaultTableModel model = new DefaultTableModel ( header, 0 );
-	private static JTable triplettTable = new JTable( model );
+	private static JTable triplettTable = new JTable( model ){
+        @Override
+        public Class getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+	            case 0:
+	                return String.class;
+	            case 1:
+	                return String.class;
+	            case 2:
+	                return Boolean.class;
+	            default:
+	                return Boolean.class;
+            }
+        }
+	};
 	private static JComboBox<String> chooseOrganism;
 	private static int organismTranslationID = 1;
 	
@@ -57,7 +72,7 @@ public class menu {
 		Map<String, String> dataMap = biocodonencoder.getTriplettTable();
 		
 		for (var entry : dataMap.entrySet()) {
-		    model.addRow(new Object[] { entry.getKey(), entry.getValue() });
+		    model.addRow(new Object[] { entry.getKey(), entry.getValue(), false, false });
 		}
 
 		model.fireTableDataChanged();
@@ -200,3 +215,5 @@ public class menu {
 		menu.setVisible( true );
 	}
 }
+
+

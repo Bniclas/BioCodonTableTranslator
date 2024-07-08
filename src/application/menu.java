@@ -17,6 +17,7 @@ public class menu {
 	private static JMenuBar menuBar;
 	private static JMenu mainMenu;
 	private static JTextArea Console;
+	private static JTextArea codeInput;
 	private static final Object[] header = new Object[] { "Triplett", "Aminoacid", "STOP", "Init" };
 	private static DefaultTableModel model = new DefaultTableModel ( header, 0 );
 	private static JTable triplettTable = new JTable( model );
@@ -27,7 +28,7 @@ public class menu {
 	    try {
 	        for ( LookAndFeelInfo info : UIManager.getInstalledLookAndFeels() ) {
 	        	//System.out.println( info.getName() );
-	            if ("Windows".equalsIgnoreCase(info.getName())) {
+	            if ("Nimbus".equalsIgnoreCase(info.getName())) {
 	                UIManager.setLookAndFeel(info.getClassName());
 	                break;
 	            }
@@ -39,6 +40,11 @@ public class menu {
 	    biocodonencoder.prepare( organismTranslationID );
 	    createMenu();
 	    refreshMenu();
+	}
+	
+	public static void printConsole( String text ) {
+		Console.append(text);
+		Console.append("\n");
 	}
 	
 	public static void refreshMenu( ) {
@@ -87,6 +93,7 @@ public class menu {
 	    GridBagConstraints leftConstraint = new GridBagConstraints();
 	    leftLayout.setConstraints(menu,leftConstraint);
 	    leftConstraint.fill = GridBagConstraints.BOTH;
+	    leftConstraint.gridwidth = 2;
 	    leftMainPanel.setLayout(leftLayout);
 		
 		menu.add( leftMainPanel, mainConstraint );
@@ -111,13 +118,55 @@ public class menu {
 		leftMainPanel.add(chooseOrganism, leftConstraint);
 		
 		leftConstraint.gridx = 0;
-		leftConstraint.gridy = 100;
+		leftConstraint.gridy = 20;
 		leftConstraint.weightx = 0.5;
 		leftConstraint.weighty = 1;
 		leftMainPanel.add( triplettTable, leftConstraint );
-		
-		JScrollPane leftScrollPanel = new JScrollPane(triplettTable); 
+		JScrollPane leftScrollPanel = new JScrollPane(triplettTable);
 		leftMainPanel.add( leftScrollPanel, leftConstraint );
+		
+		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 25;
+		JLabel infoLabel = new JLabel("Input your triplet code here:");
+		leftMainPanel.add( infoLabel, leftConstraint );
+		
+		leftConstraint.gridwidth = 1;
+		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 27;
+		JRadioButton rnaAcid = new JRadioButton ("RNA", true);
+		JRadioButton dnaAcid = new JRadioButton ("DNA", false);
+		ButtonGroup group = new ButtonGroup();
+		group.add( rnaAcid );
+		group.add( dnaAcid );
+		leftMainPanel.add( rnaAcid, leftConstraint );
+		leftConstraint.gridx = 1;
+		leftMainPanel.add( dnaAcid, leftConstraint );
+		leftConstraint.gridwidth = 2;
+		
+		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 30;
+		codeInput = new JTextArea();
+		codeInput.setEditable( true );
+		leftMainPanel.add( codeInput, leftConstraint );
+		
+		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 40;
+		JButton runDecode = new JButton("Decode input");
+		runDecode.addActionListener(new ActionListener() { 
+			  public void actionPerformed(ActionEvent e) { 
+				  String[] inputData = new String[1];
+				  inputData[0] = codeInput.getText();
+				  String result = "";
+				  if (rnaAcid.isSelected()) {
+					  result = biocodonencoder.decodeRNA( inputData );
+				  }
+				  else {
+					  result = biocodonencoder.decodeDNA( inputData );
+				  }
+				  printConsole( result );
+			  } 
+		});
+		leftMainPanel.add( runDecode, leftConstraint );
 		
 		mainConstraint.gridx = 1;
 		mainConstraint.gridy = 0;

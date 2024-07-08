@@ -368,6 +368,12 @@ public class biocodonencoder {
 		String encodedRNA = "";
 		encodedRNA = encodedRNA + "> ";
 		
+		if ( isRNA == false ) {
+			for (var entry : codonTable.entrySet() ) {
+				entry.getKey().replaceAll("U", "T");
+			}
+		}
+		
 		if ( args.length == 0 ) {
 			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
 			return encodedRNA;
@@ -387,7 +393,8 @@ public class biocodonencoder {
 		}
 		
 		for ( int i=0; i<rnaParts.size(); i++ ) {
-			codon = codonTable.get( rnaParts.get(i) );
+			String triplet = rnaParts.get(i);
+			codon = codonTable.get( triplet );
 			if ( i != 0 ) {
 				prevCodon = codonTable.get( rnaParts.get(i-1) );
 			}
@@ -442,14 +449,12 @@ public class biocodonencoder {
 		return encodedRNA;
 	}
 	
-	public static String encodeRNA( String[] args ) {
-		System.out.println(">>>>>>>>>> RNA Analyse wird gestartet:\n\n");
+	public static String decodeRNA( String[] args ) {
 		return nucleinToAmino(args, true);
 	}
 	
 	
-	public static String encodeDNA( String[] args ) {
-		System.out.println(">>>>>>>>>> DNA Analyse wird gestartet:\n\n");
+	public static String decodeDNA( String[] args ) {
 		return nucleinToAmino(args, false);
 	}
 	

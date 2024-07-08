@@ -18,7 +18,7 @@ public class menu {
 	private static JMenu mainMenu;
 	private static JTextArea Console;
 	private static JTextArea codeInput;
-	private static final Object[] header = new Object[] { "TRIPLET", "AMINO ACID", "STOP", "INIT" };
+	private static final Object[] header = new Object[] { "Triplet", "Amino Acid", "Stopcodon", "Initcodon" };
 	@SuppressWarnings("serial")
 	private static DefaultTableModel model = new DefaultTableModel ( header, 0 );
 	private static JTable triplettTable = new JTable( model ){
@@ -72,7 +72,23 @@ public class menu {
 		Map<String, String> dataMap = biocodonencoder.getTriplettTable();
 		
 		for (var entry : dataMap.entrySet()) {
-		    model.addRow(new Object[] { entry.getKey(), entry.getValue(), false, false });
+			boolean stopcodon = false;
+			boolean initcodon = false;
+			if ( entry.getValue() == "STOP" ) {
+				stopcodon = true;
+			}
+			if ( entry.getValue() == "Met" ) {
+				initcodon = true;
+			}
+			
+			String triplet = entry.getKey();
+			if ( biocodonencoder.getNucleinAcid() == "DNA" ) {
+				triplet = triplet.replaceAll("U","T");
+			}
+			else {
+				triplet = triplet.replaceAll("T","U");
+			}
+		    model.addRow(new Object[] { triplet, entry.getValue(), stopcodon, initcodon });
 		}
 
 		model.fireTableDataChanged();
@@ -153,7 +169,19 @@ public class menu {
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 27;
 		JRadioButton rnaAcid = new JRadioButton ("RNA", true);
+		rnaAcid.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	biocodonencoder.setNucleinAcid("RNA");
+		    	refreshMenu();
+		    }
+		});
 		JRadioButton dnaAcid = new JRadioButton ("DNA", false);
+		dnaAcid.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	biocodonencoder.setNucleinAcid("DNA");
+		    	refreshMenu();
+		    }
+		});
 		ButtonGroup group = new ButtonGroup();
 		group.add( rnaAcid );
 		group.add( dnaAcid );
@@ -166,6 +194,8 @@ public class menu {
 		leftConstraint.gridy = 30;
 		codeInput = new JTextArea();
 		codeInput.setEditable( true );
+		codeInput.setLineWrap(true);
+		codeInput.setWrapStyleWord(true);
 		leftMainPanel.add( codeInput, leftConstraint );
 		
 		leftConstraint.gridx = 0;
@@ -173,19 +203,31 @@ public class menu {
 		JButton runDecode = new JButton("Decode input");
 		runDecode.addActionListener(new ActionListener() { 
 			  public void actionPerformed(ActionEvent e) { 
+				  biocodonencoder.clearStopCodons();
+				  biocodonencoder.clearInitCodons();
+				  
+				  for (int i=0; i<triplettTable.getRowCount(); i++ ) {
+					  String triplet = (String) triplettTable.getValueAt(i, 0);
+					  
+					  if ( (boolean) triplettTable.getValueAt(i, 2) == true || triplet == "STOP" ) {
+						  biocodonencoder.insertStopCodon( triplet );
+					  }
+					  if ( (boolean) triplettTable.getValueAt(i, 3) == true ) {
+						  biocodonencoder.insertInitCodon( triplet );
+					  }
+				  }
+				  
 				  clearConsole();
 				  String[] inputData = new String[1];
 				  inputData[0] = codeInput.getText();
 				  String result = "";
 				  if (rnaAcid.isSelected()) {
-					  biocodonencoder.setNucleinAcid("RNA");
 					  biocodonencoder.prepare( organismTranslationID );
-					  result = biocodonencoder.decodeRNA( inputData );
+					  result = biocodonencoder.decode( inputData );
 				  }
 				  else {
-					  biocodonencoder.setNucleinAcid("DNA");
 					  biocodonencoder.prepare( organismTranslationID );
-					  result = biocodonencoder.decodeDNA( inputData );
+					  result = biocodonencoder.decode( inputData );
 				  }
 				  printConsole( result );
 			  } 
@@ -205,6 +247,8 @@ public class menu {
 		
 		Console = new JTextArea();
 		Console.setEditable( false );
+		Console.setLineWrap(true);
+		Console.setWrapStyleWord(true);
 		rightConstraint.gridx = 0;
 		rightConstraint.gridy = 0;
 		rightConstraint.weightx = 1;

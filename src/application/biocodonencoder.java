@@ -60,6 +60,22 @@ public class biocodonencoder {
 		overwriteOrganismNA();
 	}
 	
+	public static void clearStopCodons() {
+		stopCodonList.clear();
+	}
+	
+	public static void clearInitCodons() {
+		initCodonList.clear();
+	}
+	
+	public static void insertStopCodon( String triplet ) {
+		stopCodonList.put(triplet, "STOP");
+	}
+	
+	public static void insertInitCodon( String triplet ) {
+		initCodonList.put(triplet, "INIT");
+	}
+	
 	private static boolean isStopCodon( String triplet ) {
 		if( stopCodonList.get(triplet) != null ) {
 			return true;
@@ -221,14 +237,14 @@ public class biocodonencoder {
 		overwrite = new HashMap<String , String> (){{
 			put("#AA","Ser");
 			put("#AG","Lys");
-			put("#GA","Trp/"+stopCode);
+			put("#GA","Trp");
 		}};
 		overwriteNAbyOrganism.put(27, overwrite);
 		
 		overwrite = new HashMap<String , String> (){{
-			put("#AA","Gln/"+stopCode);
-			put("#AG","Gln/"+stopCode);
-			put("#GA","Trp/"+stopCode);
+			put("#AA","Gln");
+			put("#AG","Gln");
+			put("#GA","Trp");
 		}};
 		overwriteNAbyOrganism.put(28, overwrite);
 		
@@ -245,8 +261,8 @@ public class biocodonencoder {
 		overwriteNAbyOrganism.put(30, overwrite);
 		
 		overwrite = new HashMap<String , String> (){{
-			put("#AA","Glu/"+stopCode);
-			put("#AG","Glu/"+stopCode);
+			put("#AA","Glu");
+			put("#AG","Glu");
 			put("#GA","Trp");
 		}};
 		overwriteNAbyOrganism.put(31, overwrite);
@@ -379,18 +395,18 @@ public class biocodonencoder {
 	}
 
 	
-	public static String nucleinToAmino( String[] args, boolean isRNA ) {
+	public static String nucleinToAmino( String[] args ) {
 		int partCounter = 0;
 		Vector<String> rnaParts = new Vector<String>();
 		String codon = null;
 		String prevCodon = null;
 		String nextCodon = null;
-		String encodedRNA = "";
-		encodedRNA = encodedRNA + "> ";
+		String decodedNucleinAcid = "";
+		decodedNucleinAcid = decodedNucleinAcid + "> ";
 		
 		if ( args.length == 0 ) {
-			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
-			return encodedRNA;
+			System.out.println("Der angegebene Nucleinsäure Code ist fehlerhaft.");
+			return decodedNucleinAcid;
 		}
 		
 		args[0] = args[0].replaceAll(",", "");
@@ -398,8 +414,8 @@ public class biocodonencoder {
 		args[0] = args[0].replaceAll(" ", "");
 		
 		if( args[0].length() % 3 != 0 ) {
-			System.out.println("Der angegebene RNA Code ist fehlerhaft.");
-			return encodedRNA;
+			System.out.println("Der angegebene Nucleinsäure Code ist fehlerhaft.");
+			return decodedNucleinAcid;
 		}
 		
 		for ( int i=0; i<args[0].length(); i+=3 ) {
@@ -424,40 +440,38 @@ public class biocodonencoder {
 			}
 
 			if ( codon == null ) {
-				System.out.println("Der folgende RNA-Part existiert nicht: " + rnaParts.get(i) );
+				System.out.println("Der folgende Nucleinsäure-Part existiert nicht: " + rnaParts.get(i) );
 				continue;
 			}
-			if ( codon == "Met" && i != 0 ) {
+
+			if (  isInitCodon( triplet ) && i != 0 ) {
 				++partCounter;
-				encodedRNA = encodedRNA + "\n";
-				encodedRNA = encodedRNA + "> ";
-				encodedRNA = encodedRNA + codon;
+				decodedNucleinAcid = decodedNucleinAcid + "\n";
+				decodedNucleinAcid = decodedNucleinAcid + "> ";
+				decodedNucleinAcid = decodedNucleinAcid + codon;
 			}
-			else if ( codon == stopCode ) {
-				++partCounter;
-				encodedRNA = encodedRNA;			
+			else if ( isStopCodon( triplet ) ) {
+				++partCounter;	
+				/*
+				decodedNucleinAcid = decodedNucleinAcid + "\n";
+				decodedNucleinAcid = decodedNucleinAcid + "> ";
+				*/
 			}
 			else {
-				encodedRNA = encodedRNA + codon;
+				decodedNucleinAcid = decodedNucleinAcid + codon;
 			}
 			
 
 			if ( i != rnaParts.size()-1 && codon != stopCode && nextCodon != "Met" ) {
-				encodedRNA = encodedRNA + "-";
+				decodedNucleinAcid = decodedNucleinAcid + "-";
 			}
 		}
 		
-		return encodedRNA;
+		return decodedNucleinAcid;
 	}
 	
-	public static String decodeRNA( String[] args ) {
-		return nucleinToAmino(args, true);
+	public static String decode( String[] args ) {
+		return nucleinToAmino(args);
 	}
-	
-	
-	public static String decodeDNA( String[] args ) {
-		return nucleinToAmino(args, false);
-	}
-	
 	
 }

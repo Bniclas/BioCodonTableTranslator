@@ -7,10 +7,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class biocodonencoder {
-	static final Map<String , String> RNAcodonTable = new HashMap<String , String>();
-	static final Map<String , String> DNAcodonTable = new HashMap<String , String>();
-	
-	static final Map<String, String> CodonTableToUse = new HashMap<String , String>();
+	static final Map<String , String> codonTable = new HashMap<String , String>();
 	
 	private static final String stopCode = "STOP";
 	@SuppressWarnings("serial")
@@ -48,7 +45,15 @@ public class biocodonencoder {
 		selectedOrganism = organismNumber;
 	}
 	
+	public static Map<Integer, String> getOrganismList(){
+		return organismSelection;
+	}
+	
 	static final Map<Integer, Object> overwriteNAbyOrganism = new HashMap<Integer, Object>();
+	
+	public static Map<String, String> getTriplettTable(){
+		return codonTable; 
+	}
 	
 	public static void initOrganismNA() {
 		Map<String, String> overwrite = new HashMap<String , String> (){{
@@ -229,10 +234,9 @@ public class biocodonencoder {
 		
 		for ( var entry : overwriteData.entrySet() ) {
 			String key = entry.getKey().replaceAll( "#", "T" );
-			DNAcodonTable.put( key, entry.getValue() );
+			codonTable.put( key, entry.getValue() );
 			
-			key = entry.getKey().replaceAll( "#", "U" );
-			RNAcodonTable.put( key, entry.getValue() );
+			//System.out.println( key+ entry.getValue() );
 		}
 		
 	}
@@ -241,99 +245,101 @@ public class biocodonencoder {
 		/*
 			A - Start
 		*/
-		RNAcodonTable.put("AGG", "Arg");
-		RNAcodonTable.put("AGA", "Arg");
-		RNAcodonTable.put("AGC", "Ser");
-		RNAcodonTable.put("AGU", "Ser");
+		codonTable.put("AGG", "Arg");
+		codonTable.put("AGA", "Arg");
+		codonTable.put("AGC", "Ser");
+		codonTable.put("AGU", "Ser");
 		
-		RNAcodonTable.put("AAG", "Lys");
-		RNAcodonTable.put("AAA", "Lys");
-		RNAcodonTable.put("AAC", "Asn");
-		RNAcodonTable.put("AAU", "Asn");
+		codonTable.put("AAG", "Lys");
+		codonTable.put("AAA", "Lys");
+		codonTable.put("AAC", "Asn");
+		codonTable.put("AAU", "Asn");
 		
-		RNAcodonTable.put("ACG", "Thr");
-		RNAcodonTable.put("ACA", "Thr");
-		RNAcodonTable.put("ACC", "Thr");
-		RNAcodonTable.put("ACU", "Thr");
+		codonTable.put("ACG", "Thr");
+		codonTable.put("ACA", "Thr");
+		codonTable.put("ACC", "Thr");
+		codonTable.put("ACU", "Thr");
 		
-		RNAcodonTable.put("AUG", "Met");
-		RNAcodonTable.put("AUA", "Ile");
-		RNAcodonTable.put("AUC", "Ile");
-		RNAcodonTable.put("AUU", "Ile");
+		codonTable.put("AUG", "Met");
+		codonTable.put("AUA", "Ile");
+		codonTable.put("AUC", "Ile");
+		codonTable.put("AUU", "Ile");
 		
 		/*
 			C - Start
 		*/
-		RNAcodonTable.put("CGG", "Arg");
-		RNAcodonTable.put("CGA", "Arg");
-		RNAcodonTable.put("CGC", "Arg");
-		RNAcodonTable.put("CGU", "Arg");
+		codonTable.put("CGG", "Arg");
+		codonTable.put("CGA", "Arg");
+		codonTable.put("CGC", "Arg");
+		codonTable.put("CGU", "Arg");
 		
-		RNAcodonTable.put("CAG", "Gln");
-		RNAcodonTable.put("CAA", "Gln");
-		RNAcodonTable.put("CAC", "His");
-		RNAcodonTable.put("CAU", "His");
+		codonTable.put("CAG", "Gln");
+		codonTable.put("CAA", "Gln");
+		codonTable.put("CAC", "His");
+		codonTable.put("CAU", "His");
 		
-		RNAcodonTable.put("CCG", "Pro");
-		RNAcodonTable.put("CCA", "Pro");
-		RNAcodonTable.put("CCC", "Pro");
-		RNAcodonTable.put("CCU", "Pro");
+		codonTable.put("CCG", "Pro");
+		codonTable.put("CCA", "Pro");
+		codonTable.put("CCC", "Pro");
+		codonTable.put("CCU", "Pro");
 		
-		RNAcodonTable.put("CUG", "Leu");
-		RNAcodonTable.put("CUA", "Leu");
-		RNAcodonTable.put("CUC", "Leu");
-		RNAcodonTable.put("CUU", "Leu");
+		codonTable.put("CUG", "Leu");
+		codonTable.put("CUA", "Leu");
+		codonTable.put("CUC", "Leu");
+		codonTable.put("CUU", "Leu");
 		
 		/*
 			U - Start
 		*/
-		RNAcodonTable.put("UGG", "Trp");
-		RNAcodonTable.put("UGA", stopCode);
-		RNAcodonTable.put("UGC", "Cys");
-		RNAcodonTable.put("UGU", "Cys");
+		codonTable.put("UGG", "Trp");
+		codonTable.put("UGA", stopCode);
+		codonTable.put("UGC", "Cys");
+		codonTable.put("UGU", "Cys");
 		
-		RNAcodonTable.put("UAG", stopCode);
-		RNAcodonTable.put("UAA", stopCode);
-		RNAcodonTable.put("UAC", "Tyr");
-		RNAcodonTable.put("UAU", "Tyr");
+		codonTable.put("UAG", stopCode);
+		codonTable.put("UAA", stopCode);
+		codonTable.put("UAC", "Tyr");
+		codonTable.put("UAU", "Tyr");
 		
-		RNAcodonTable.put("UCG", "Ser");
-		RNAcodonTable.put("UCA", "Ser");
-		RNAcodonTable.put("UCC", "Ser");
-		RNAcodonTable.put("UCU", "Ser");
+		codonTable.put("UCG", "Ser");
+		codonTable.put("UCA", "Ser");
+		codonTable.put("UCC", "Ser");
+		codonTable.put("UCU", "Ser");
 		
-		RNAcodonTable.put("UUG", "Leu");
-		RNAcodonTable.put("UUA", "Leu");
-		RNAcodonTable.put("UUC", "Phe");
-		RNAcodonTable.put("UUU", "Phe");	
+		codonTable.put("UUG", "Leu");
+		codonTable.put("UUA", "Leu");
+		codonTable.put("UUC", "Phe");
+		codonTable.put("UUU", "Phe");	
 		
 		/*
 			G - Start
 		*/
-		RNAcodonTable.put("GGG", "Gly");
-		RNAcodonTable.put("GGA", "Gly");
-		RNAcodonTable.put("GGC", "Gly");
-		RNAcodonTable.put("GGU", "Gly");
+		codonTable.put("GGG", "Gly");
+		codonTable.put("GGA", "Gly");
+		codonTable.put("GGC", "Gly");
+		codonTable.put("GGU", "Gly");
 		
-		RNAcodonTable.put("GAG", "Glu");
-		RNAcodonTable.put("GAA", "Glu");
-		RNAcodonTable.put("GAC", "Asp");
-		RNAcodonTable.put("GAU", "Asp");
+		codonTable.put("GAG", "Glu");
+		codonTable.put("GAA", "Glu");
+		codonTable.put("GAC", "Asp");
+		codonTable.put("GAU", "Asp");
 		
-		RNAcodonTable.put("GCG", "Ala");
-		RNAcodonTable.put("GCA", "Ala");
-		RNAcodonTable.put("GCC", "Ala");
-		RNAcodonTable.put("GCU", "Ala");
+		codonTable.put("GCG", "Ala");
+		codonTable.put("GCA", "Ala");
+		codonTable.put("GCC", "Ala");
+		codonTable.put("GCU", "Ala");
 		
-		RNAcodonTable.put("GUG", "Val");
-		RNAcodonTable.put("GUA", "Val");
-		RNAcodonTable.put("GUC", "Val");
-		RNAcodonTable.put("GUU", "Val");	
+		codonTable.put("GUG", "Val");
+		codonTable.put("GUA", "Val");
+		codonTable.put("GUC", "Val");
+		codonTable.put("GUU", "Val");	
 		
-		for (var entry : RNAcodonTable.entrySet()) {
+		/*
+		for (var entry : codonTable.entrySet()) {
 			String key = entry.getKey().replaceAll( "U", "T" );
 			DNAcodonTable.put( key, entry.getValue() );
 		}
+		*/
 	}
 	
 	static final Map<String , String> stopCodonTranslation = new HashMap<String , String>() {{
@@ -354,14 +360,6 @@ public class biocodonencoder {
 	}
 	
 	public static String nucleinToAmino( String[] args, boolean isRNA ) {
-		HashMap<String, String> mapToUse = new HashMap<>();
-		if ( isRNA == true ) {
-			mapToUse.putAll( RNAcodonTable );  
-		}
-		else {
-			mapToUse.putAll( DNAcodonTable );  
-		}
-
 		int partCounter = 0;
 		Vector<String> rnaParts = new Vector<String>();
 		String codon = null;
@@ -389,16 +387,16 @@ public class biocodonencoder {
 		}
 		
 		for ( int i=0; i<rnaParts.size(); i++ ) {
-			codon = mapToUse.get( rnaParts.get(i) );
+			codon = codonTable.get( rnaParts.get(i) );
 			if ( i != 0 ) {
-				prevCodon = mapToUse.get( rnaParts.get(i-1) );
+				prevCodon = codonTable.get( rnaParts.get(i-1) );
 			}
 			else {
 				prevCodon = null;
 			}
 			
 			if ( i != rnaParts.size() - 1) {
-				nextCodon = mapToUse.get( rnaParts.get(i+1) );
+				nextCodon = codonTable.get( rnaParts.get(i+1) );
 			}
 			else {
 				nextCodon = null;

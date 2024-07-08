@@ -4,21 +4,30 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.table.DefaultTableModel;
 
 public class menu {
 	private static JFrame menu;
 	private static JMenuBar menuBar;
 	private static JMenu mainMenu;
 	private static JTextArea Console;
+	private static final Object[] header = new Object[] { "Triplett", "Aminoacid", "STOP", "Init" };
+	private static DefaultTableModel model = new DefaultTableModel ( header, 0 );
+	private static JTable triplettTable = new JTable( model );
+	private static JComboBox<String> chooseOrganism;
+	private static int organismTranslationID = 1;
 	
 	public menu() {
 	    try {
 	        for ( LookAndFeelInfo info : UIManager.getInstalledLookAndFeels() ) {
 	        	//System.out.println( info.getName() );
-	            if ("Nimbus".equalsIgnoreCase(info.getName())) {
+	            if ("Windows".equalsIgnoreCase(info.getName())) {
 	                UIManager.setLookAndFeel(info.getClassName());
 	                break;
 	            }
@@ -27,8 +36,24 @@ public class menu {
 	    catch ( Exception e) {
 	      
 	    }
-	    
+	    biocodonencoder.prepare( organismTranslationID );
 	    createMenu();
+	    refreshMenu();
+	}
+	
+	public static void refreshMenu( ) {
+		biocodonencoder.prepare( organismTranslationID );
+		model = new DefaultTableModel ( header, 0 );
+		Map<String, String> dataMap = biocodonencoder.getTriplettTable();
+		
+		for (var entry : dataMap.entrySet()) {
+		    model.addRow(new Object[] { entry.getKey(), entry.getValue() });
+		}
+
+		model.fireTableDataChanged();
+		triplettTable.setModel(model);
+		triplettTable.repaint();
+		//menu.revalidate();
 	}
 	
 	public static void createMenu() {
@@ -63,7 +88,36 @@ public class menu {
 	    leftLayout.setConstraints(menu,leftConstraint);
 	    leftConstraint.fill = GridBagConstraints.BOTH;
 	    leftMainPanel.setLayout(leftLayout);
+		
 		menu.add( leftMainPanel, mainConstraint );
+		
+		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 5;
+		
+		chooseOrganism = new JComboBox();
+		for ( var entry : biocodonencoder.organismSelection.entrySet()) {
+			chooseOrganism.addItem( entry.getValue() );
+		}
+		chooseOrganism.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	for ( var entry: biocodonencoder.organismSelection.entrySet() ) {
+		    		if ( entry.getValue() == chooseOrganism.getSelectedItem() ) {
+		    			organismTranslationID = entry.getKey();
+		    		}
+		    	}
+		    	refreshMenu();
+		    }
+		});
+		leftMainPanel.add(chooseOrganism, leftConstraint);
+		
+		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 100;
+		leftConstraint.weightx = 0.5;
+		leftConstraint.weighty = 1;
+		leftMainPanel.add( triplettTable, leftConstraint );
+		
+		JScrollPane leftScrollPanel = new JScrollPane(triplettTable); 
+		leftMainPanel.add( leftScrollPanel, leftConstraint );
 		
 		mainConstraint.gridx = 1;
 		mainConstraint.gridy = 0;
@@ -74,6 +128,7 @@ public class menu {
 	    rightConstraint.fill = GridBagConstraints.BOTH;
 	    rightMainPanel.setLayout(rightLayout);
 		menu.add( rightMainPanel, mainConstraint );
+		
 		
 		Console = new JTextArea();
 		Console.setEditable( false );

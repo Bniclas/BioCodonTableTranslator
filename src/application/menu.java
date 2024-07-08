@@ -160,10 +160,16 @@ public class menu {
 		JScrollPane leftScrollPanel = new JScrollPane(triplettTable);
 		leftMainPanel.add( leftScrollPanel, leftConstraint );
 		
+		
 		leftConstraint.gridx = 0;
-		leftConstraint.gridy = 25;
-		JLabel infoLabel = new JLabel("Input your triplet code here:");
+		leftConstraint.gridy = 28;
+		JLabel infoLabel = new JLabel("Input from File: ");
 		leftMainPanel.add( infoLabel, leftConstraint );
+		leftConstraint.gridx = 1;
+		leftConstraint.gridy = 28;
+		leftConstraint.gridwidth = 3;
+		JTextField fileChoose = new JTextField("C:/Users/nicla/Desktop/RNA_DATAFILE.txt");
+		leftMainPanel.add( fileChoose, leftConstraint );
 		
 		leftConstraint.gridwidth = 1;
 		leftConstraint.gridx = 0;
@@ -191,6 +197,11 @@ public class menu {
 		leftConstraint.gridwidth = 2;
 		
 		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 30;
+		infoLabel = new JLabel("Input from User: ");
+		leftMainPanel.add( infoLabel, leftConstraint );
+		
+		leftConstraint.gridx = 1;
 		leftConstraint.gridy = 30;
 		codeInput = new JTextArea();
 		codeInput.setEditable( true );
@@ -244,7 +255,9 @@ public class menu {
 	    rightMainPanel.setLayout(rightLayout);
 		menu.add( rightMainPanel, mainConstraint );
 		
-		
+		rightConstraint.gridx = 0;
+		rightConstraint.gridy = 0;
+		rightConstraint.gridwidth = 2;
 		Console = new JTextArea();
 		Console.setEditable( false );
 		Console.setLineWrap(true);

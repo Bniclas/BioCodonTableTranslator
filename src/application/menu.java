@@ -42,6 +42,10 @@ public class menu {
 	    refreshMenu();
 	}
 	
+	public static void clearConsole() {
+		Console.setText("");
+	}
+	
 	public static void printConsole( String text ) {
 		Console.append(text);
 		Console.append("\n");
@@ -102,12 +106,12 @@ public class menu {
 		leftConstraint.gridy = 5;
 		
 		chooseOrganism = new JComboBox();
-		for ( var entry : biocodonencoder.organismSelection.entrySet()) {
+		for ( var entry : biocodonencoder.getOrganismList().entrySet()) {
 			chooseOrganism.addItem( entry.getValue() );
 		}
 		chooseOrganism.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	for ( var entry: biocodonencoder.organismSelection.entrySet() ) {
+		    	for ( var entry: biocodonencoder.getOrganismList().entrySet() ) {
 		    		if ( entry.getValue() == chooseOrganism.getSelectedItem() ) {
 		    			organismTranslationID = entry.getKey();
 		    		}
@@ -154,13 +158,18 @@ public class menu {
 		JButton runDecode = new JButton("Decode input");
 		runDecode.addActionListener(new ActionListener() { 
 			  public void actionPerformed(ActionEvent e) { 
+				  clearConsole();
 				  String[] inputData = new String[1];
 				  inputData[0] = codeInput.getText();
 				  String result = "";
 				  if (rnaAcid.isSelected()) {
+					  biocodonencoder.setNucleinAcid("RNA");
+					  biocodonencoder.prepare( organismTranslationID );
 					  result = biocodonencoder.decodeRNA( inputData );
 				  }
 				  else {
+					  biocodonencoder.setNucleinAcid("DNA");
+					  biocodonencoder.prepare( organismTranslationID );
 					  result = biocodonencoder.decodeDNA( inputData );
 				  }
 				  printConsole( result );

@@ -6,7 +6,14 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -52,7 +59,7 @@ public class menu {
 	    catch ( Exception e) {
 	      
 	    }
-	    biocodonencoder.prepare( organismTranslationID );
+	    biocodon.prepare( organismTranslationID );
 	    createMenu();
 	    refreshMenu();
 	}
@@ -67,9 +74,9 @@ public class menu {
 	}
 	
 	public static void refreshMenu( ) {
-		biocodonencoder.prepare( organismTranslationID );
+		biocodon.prepare( organismTranslationID );
 		model = new DefaultTableModel ( header, 0 );
-		Map<String, String> dataMap = biocodonencoder.getTriplettTable();
+		Map<String, String> dataMap = biocodon.getTriplettTable();
 		
 		for (var entry : dataMap.entrySet()) {
 			boolean stopcodon = false;
@@ -82,7 +89,7 @@ public class menu {
 			}
 			
 			String triplet = entry.getKey();
-			if ( biocodonencoder.getNucleinAcid() == "DNA" ) {
+			if ( biocodon.getNucleinAcid() == "DNA" ) {
 				triplet = triplet.replaceAll("U","T");
 			}
 			else {
@@ -137,12 +144,12 @@ public class menu {
 		leftConstraint.gridy = 5;
 		
 		chooseOrganism = new JComboBox();
-		for ( var entry : biocodonencoder.getOrganismList().entrySet()) {
+		for ( var entry : biocodon.getOrganismList().entrySet()) {
 			chooseOrganism.addItem( entry.getValue() );
 		}
 		chooseOrganism.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	for ( var entry: biocodonencoder.getOrganismList().entrySet() ) {
+		    	for ( var entry: biocodon.getOrganismList().entrySet() ) {
 		    		if ( entry.getValue() == chooseOrganism.getSelectedItem() ) {
 		    			organismTranslationID = entry.getKey();
 		    		}
@@ -177,14 +184,14 @@ public class menu {
 		JRadioButton rnaAcid = new JRadioButton ("RNA", true);
 		rnaAcid.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	biocodonencoder.setNucleinAcid("RNA");
+		    	biocodon.setNucleinAcid("RNA");
 		    	refreshMenu();
 		    }
 		});
 		JRadioButton dnaAcid = new JRadioButton ("DNA", false);
 		dnaAcid.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	biocodonencoder.setNucleinAcid("DNA");
+		    	biocodon.setNucleinAcid("DNA");
 		    	refreshMenu();
 		    }
 		});
@@ -214,31 +221,51 @@ public class menu {
 		JButton runDecode = new JButton("Decode input");
 		runDecode.addActionListener(new ActionListener() { 
 			  public void actionPerformed(ActionEvent e) { 
-				  biocodonencoder.clearStopCodons();
-				  biocodonencoder.clearInitCodons();
+				  biocodon.clearStopCodons();
+				  biocodon.clearInitCodons();
+				  
+				  File dataFile = new File( fileChoose.getText() );
+				  String[] inputData = new String[1];
+				  inputData[0] = "";
+				  
+				  if ( dataFile.exists() ) {
+					  try {
+						  BufferedReader reader = new BufferedReader ( new FileReader( fileChoose.getText( )) );
+						  String line;
+						  while ( (line = reader.readLine() ) != null) {
+					          inputData[0] = inputData[0] + line;
+					      }
+					      reader.close();
+					  } 
+					  catch (IOException e1) {
+						  e1.printStackTrace();
+					  }
+				  }
+				  else {
+					  inputData[0] = codeInput.getText();
+				  }
+
 				  
 				  for (int i=0; i<triplettTable.getRowCount(); i++ ) {
 					  String triplet = (String) triplettTable.getValueAt(i, 0);
 					  
 					  if ( (boolean) triplettTable.getValueAt(i, 2) == true || triplet == "STOP" ) {
-						  biocodonencoder.insertStopCodon( triplet );
+						  biocodon.insertStopCodon( triplet );
 					  }
 					  if ( (boolean) triplettTable.getValueAt(i, 3) == true ) {
-						  biocodonencoder.insertInitCodon( triplet );
+						  biocodon.insertInitCodon( triplet );
 					  }
 				  }
 				  
 				  clearConsole();
-				  String[] inputData = new String[1];
-				  inputData[0] = codeInput.getText();
 				  String result = "";
 				  if (rnaAcid.isSelected()) {
-					  biocodonencoder.prepare( organismTranslationID );
-					  result = biocodonencoder.decode( inputData );
+					  biocodon.prepare( organismTranslationID );
+					  result = biocodon.decode( inputData );
 				  }
 				  else {
-					  biocodonencoder.prepare( organismTranslationID );
-					  result = biocodonencoder.decode( inputData );
+					  biocodon.prepare( organismTranslationID );
+					  result = biocodon.decode( inputData );
 				  }
 				  printConsole( result );
 			  } 

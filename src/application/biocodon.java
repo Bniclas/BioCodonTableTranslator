@@ -1,12 +1,10 @@
 package application;
 
 import java.util.Map;
-
-
 import java.util.HashMap;
 import java.util.Vector;
 
-public class biocodonencoder {
+public class biocodon {
 	private static String nucleinAcid = "RNA"; // OR DNA
 	
 	public static String getNucleinAcid() {

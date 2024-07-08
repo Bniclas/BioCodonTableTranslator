@@ -50,17 +50,8 @@ public class biocodonencoder {
 		put(33, "Cephalodscidae mitochondrial code");
 	}};
 	
-	private static final Map<String , String> stopCodonTranslation = new HashMap<String , String>() {{
-		put("TAG", "Amber");
-		put("TAA", "Ochre");
-		put("TGA", "Opal");
-		
-		put("UAG", "Amber");
-		put("UAA", "Ochre");
-		put("UGA", "Opal");
-	}};
-	
-	static final Map<String , String> initCodonTranslation = new HashMap<String , String>();
+	private static final Map<String , String> stopCodonList = new HashMap<String , String>();
+	private static final Map<String , String> initCodonList = new HashMap<String , String>();
 
 	public static void prepare( int selectedOrganism ) {
 		setOrganism(selectedOrganism);
@@ -70,7 +61,7 @@ public class biocodonencoder {
 	}
 	
 	private static boolean isStopCodon( String triplet ) {
-		if( stopCodonTranslation.get(triplet) != null ) {
+		if( stopCodonList.get(triplet) != null ) {
 			return true;
 		} else {
 			return false;
@@ -78,7 +69,7 @@ public class biocodonencoder {
 	}
 	
 	private static boolean isInitCodon( String triplet ) {
-		if( initCodonTranslation.get(triplet) != null ) {
+		if( initCodonList.get(triplet) != null ) {
 			return true;
 		} else {
 			return false;
@@ -288,10 +279,10 @@ public class biocodonencoder {
 
 	public static void writeBasicRNAandDNA() {
 		
-		char baseS = 'U';
+		String baseS = "U";
 		
 		if ( getNucleinAcid() == "DNA" ) {
-			baseS = 'T';
+			baseS = "T";
 		}
 		/*
 			A - Start
@@ -444,7 +435,8 @@ public class biocodonencoder {
 			}
 			else if ( codon == stopCode ) {
 				++partCounter;
-				encodedRNA = encodedRNA + stopCodonTranslation.get( rnaParts.get(i) );			}
+				encodedRNA = encodedRNA;			
+			}
 			else {
 				encodedRNA = encodedRNA + codon;
 			}

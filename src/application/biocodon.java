@@ -6,17 +6,7 @@ import java.util.Vector;
 
 public class biocodon {
 	private static String nucleinAcid = "RNA"; // OR DNA
-	
-	public static String getNucleinAcid() {
-		return nucleinAcid;
-	}
-	
-	public static void setNucleinAcid( String acid ) {
-		nucleinAcid = acid;
-	}
-	
 	private static final Map<String , String> codonTable = new HashMap<String , String>();
-	
 	private static final String stopCode = "STOP";
 	@SuppressWarnings("serial")
 	private static final Map<Integer, String> organismSelection = new HashMap<Integer, String>() {{
@@ -47,32 +37,11 @@ public class biocodon {
 		put(31, "Blastocrithidia nuclear");
 		put(33, "Cephalodscidae mitochondrial code");
 	}};
-	
 	private static final Map<String , String> stopCodonList = new HashMap<String , String>();
 	private static final Map<String , String> initCodonList = new HashMap<String , String>();
-
-	public static void prepare( int selectedOrganism ) {
-		setOrganism(selectedOrganism);
-		writeBasicRNAandDNA();
-		initOrganismNA();
-		overwriteOrganismNA();
-	}
+	private static final Map<Integer, Object> overwriteNAbyOrganism = new HashMap<Integer, Object>();
+	private static int selectedOrganism = 1;
 	
-	public static void clearStopCodons() {
-		stopCodonList.clear();
-	}
-	
-	public static void clearInitCodons() {
-		initCodonList.clear();
-	}
-	
-	public static void insertStopCodon( String triplet ) {
-		stopCodonList.put(triplet, "STOP");
-	}
-	
-	public static void insertInitCodon( String triplet ) {
-		initCodonList.put(triplet, "INIT");
-	}
 	
 	private static boolean isStopCodon( String triplet ) {
 		if( stopCodonList.get(triplet) != null ) {
@@ -90,7 +59,31 @@ public class biocodon {
 		}
 	}
 	
-	private static int selectedOrganism = 1;
+	
+	public static String getNucleinAcid() {
+		return nucleinAcid;
+	}
+	
+	public static void setNucleinAcid( String acid ) {
+		nucleinAcid = acid;
+	}
+	
+	public static void clearStopCodons() {
+		stopCodonList.clear();
+	}
+	
+	public static void clearInitCodons() {
+		initCodonList.clear();
+	}
+	
+	public static void insertStopCodon( String triplet ) {
+		stopCodonList.put(triplet, "STOP");
+	}
+	
+	public static void insertInitCodon( String triplet ) {
+		initCodonList.put(triplet, "INIT");
+	}
+
 	public static void setOrganism( int organismNumber ) {
 		selectedOrganism = organismNumber;
 	}
@@ -98,8 +91,7 @@ public class biocodon {
 	public static Map<Integer, String> getOrganismList(){
 		return organismSelection;
 	}
-	
-	private static final Map<Integer, Object> overwriteNAbyOrganism = new HashMap<Integer, Object>();
+
 	
 	public static Map<String, String> getTriplettTable(){
 		return codonTable; 
@@ -285,10 +277,14 @@ public class biocodon {
 		for ( var entry : overwriteData.entrySet() ) {
 			String key = entry.getKey().replaceAll( "#", "T" );
 			codonTable.put( key, entry.getValue() );
-			
-			//System.out.println( key+ entry.getValue() );
 		}
-		
+	}
+	
+	public static void prepare( int selectedOrganism ) {
+		setOrganism(selectedOrganism);
+		writeBasicRNAandDNA();
+		initOrganismNA();
+		overwriteOrganismNA();
 	}
 
 	public static void writeBasicRNAandDNA() {
@@ -391,7 +387,6 @@ public class biocodon {
 		codonTable.put("G"+baseS+baseS, "Val");	
 		
 	}
-
 	
 	public static String nucleinToAmino( String[] args ) {
 		int partCounter = 0;
@@ -497,6 +492,12 @@ public class biocodon {
 		percentString = String.format("%.2f", p) + " %";
 		
 		return percentString;
+	}
+	
+	public static String getAmountOfAminoacids( String aminoacidString ) {
+		String res = "";
+		
+		return res;
 	}
 	
 }

@@ -400,7 +400,7 @@ public class biocodon {
 		String prevCodon = null;
 		String nextCodon = null;
 		String decodedNucleinAcid = "";
-		decodedNucleinAcid = decodedNucleinAcid + "> ";
+		decodedNucleinAcid = decodedNucleinAcid + "";
 		
 		if ( args.length == 0 ) {
 			System.out.println("Der angegebene Nucleinsäure Code ist fehlerhaft.");
@@ -455,7 +455,7 @@ public class biocodon {
 			if (  isInitCodon( triplet ) && i != 0 ) {
 				++partCounter;
 				decodedNucleinAcid = decodedNucleinAcid + "\n";
-				decodedNucleinAcid = decodedNucleinAcid + "> ";
+				decodedNucleinAcid = decodedNucleinAcid + "";
 				decodedNucleinAcid = decodedNucleinAcid + codon;
 			}
 			else if ( isStopCodon( triplet ) ) {
@@ -480,6 +480,23 @@ public class biocodon {
 	
 	public static String decode( String[] args ) {
 		return nucleinToAmino(args);
+	}
+	
+	public static String getAmountOf( Character ofWhat, String nucleinString ) {
+		float c = 0;
+		float p = 0;
+		String percentString;
+		for (int i=0; i<nucleinString.length(); i++) {
+			Character compValue = (Character) nucleinString.charAt(i);
+			if ( compValue.equals(ofWhat) ) {
+				c++;
+			}
+		}
+		p = c/nucleinString.length() * 100;
+		
+		percentString = String.format("%.2f", p) + " %";
+		
+		return percentString;
 	}
 	
 }

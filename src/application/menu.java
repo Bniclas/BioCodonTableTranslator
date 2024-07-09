@@ -63,14 +63,68 @@ public class menu {
 	    createMenu();
 	    refreshMenu();
 	}
+
 	
-	public static void clearConsole() {
-		Console.setText("");
-	}
 	
-	public static void printConsole( String text ) {
-		Console.append(text);
-		Console.append("\n");
+	public static void showResults( String nucleinString, String results ) {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth() * 0.3;
+		double height = screenSize.getHeight() * 0.3;
+		
+		JDialog resultDialog = new JDialog();
+		resultDialog.setSize( (int)width, (int)height);
+		resultDialog.setLocationRelativeTo(null);
+	    GridBagLayout mainBagLayout = new GridBagLayout();
+	    GridBagConstraints mainConstraint = new GridBagConstraints();
+	    mainBagLayout.setConstraints(resultDialog,mainConstraint);
+	    mainConstraint.fill = GridBagConstraints.BOTH;
+	    resultDialog.setLayout(mainBagLayout);
+	    
+		mainConstraint.gridx = 0;
+		mainConstraint.gridy = 0;
+		mainConstraint.weightx = 0.5;
+		mainConstraint.weighty = 0.8;
+		mainConstraint.gridwidth = 1;
+		
+		JTextArea  resultsConsole = new JTextArea ();
+		resultsConsole.setText( results );
+		resultsConsole.setEditable( false );
+		resultsConsole.setLineWrap(true);
+		resultsConsole.setWrapStyleWord(true);
+		resultDialog.add( resultsConsole, mainConstraint );
+		
+		mainConstraint.gridx = 0;
+		mainConstraint.gridy = 10;
+		
+		JLabel guaninAmount = new JLabel("Guanin: " + biocodon.getAmountOf( 'G', nucleinString ));
+		resultDialog.add( guaninAmount, mainConstraint );
+		
+		mainConstraint.gridy = 12;
+		JLabel cytosinAmount = new JLabel("Cytosin: " + biocodon.getAmountOf( 'C', nucleinString ));
+		resultDialog.add( cytosinAmount, mainConstraint );
+		
+		mainConstraint.gridy = 14;
+		if ( biocodon.getNucleinAcid() == "DNA") {
+			JLabel thyminAmount = new JLabel("Thymin: " + biocodon.getAmountOf( 'T', nucleinString ) );
+			resultDialog.add( thyminAmount, mainConstraint );
+		}
+		else {
+			JLabel uracilAmount = new JLabel("Uracil: " + biocodon.getAmountOf( 'U', nucleinString ));
+			resultDialog.add( uracilAmount, mainConstraint );
+		}
+		
+		mainConstraint.gridy = 16;
+		JLabel adeninAmount = new JLabel("Adenin: " + biocodon.getAmountOf( 'A', nucleinString ));
+		resultDialog.add( adeninAmount, mainConstraint );
+		
+		mainConstraint.gridx = 0;
+		mainConstraint.gridy = 100;
+		mainConstraint.weighty = 0.1;
+		
+		JButton saveButton = new JButton("Save Results");
+		resultDialog.add( saveButton, mainConstraint );
+	    
+		resultDialog.setVisible( true );
 	}
 	
 	public static void refreshMenu( ) {
@@ -106,8 +160,8 @@ public class menu {
 	
 	public static void createMenu() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		double width = screenSize.getWidth() * 0.7;
-		double height = screenSize.getHeight() * 0.7;
+		double width = screenSize.getWidth() * 0.6;
+		double height = screenSize.getHeight() * 0.6;
 		
 		menu = new JFrame("Biocodon");
 		menu.setSize( (int)width, (int)height);
@@ -162,7 +216,7 @@ public class menu {
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 20;
 		leftConstraint.weightx = 0.5;
-		leftConstraint.weighty = 1;
+		leftConstraint.weighty = 0.7;
 		leftMainPanel.add( triplettTable, leftConstraint );
 		JScrollPane leftScrollPanel = new JScrollPane(triplettTable);
 		leftMainPanel.add( leftScrollPanel, leftConstraint );
@@ -170,12 +224,13 @@ public class menu {
 		
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 28;
+		leftConstraint.weighty = 0.05;
 		JLabel infoLabel = new JLabel("Input from File: ");
 		leftMainPanel.add( infoLabel, leftConstraint );
 		leftConstraint.gridx = 1;
 		leftConstraint.gridy = 28;
 		leftConstraint.gridwidth = 3;
-		JTextField fileChoose = new JTextField("C:/Users/nicla/Desktop/RNA_DATAFILE.txt");
+		JTextField fileChoose = new JTextField("");
 		leftMainPanel.add( fileChoose, leftConstraint );
 		
 		leftConstraint.gridwidth = 1;
@@ -214,11 +269,13 @@ public class menu {
 		codeInput.setEditable( true );
 		codeInput.setLineWrap(true);
 		codeInput.setWrapStyleWord(true);
+		codeInput.setText( "AUG,AUA,AUC,UAG,AUG,UAG,AUG,UUG,UUC,AUG,UUC,CCU,UAA" );
 		leftMainPanel.add( codeInput, leftConstraint );
 		
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 40;
-		JButton runDecode = new JButton("Decode input");
+		leftConstraint.weighty = 0.05;
+		JButton runDecode = new JButton("Analyse");
 		runDecode.addActionListener(new ActionListener() { 
 			  public void actionPerformed(ActionEvent e) { 
 				  biocodon.clearStopCodons();
@@ -257,7 +314,6 @@ public class menu {
 					  }
 				  }
 				  
-				  clearConsole();
 				  String result = "";
 				  if (rnaAcid.isSelected()) {
 					  biocodon.prepare( organismTranslationID );
@@ -267,34 +323,11 @@ public class menu {
 					  biocodon.prepare( organismTranslationID );
 					  result = biocodon.decode( inputData );
 				  }
-				  printConsole( result );
+				  showResults( inputData[0], result );
 			  } 
 		});
 		leftMainPanel.add( runDecode, leftConstraint );
-		
-		mainConstraint.gridx = 1;
-		mainConstraint.gridy = 0;
-		JPanel rightMainPanel = new JPanel();
-	    GridBagLayout rightLayout = new GridBagLayout();
-	    GridBagConstraints rightConstraint = new GridBagConstraints();
-	    rightLayout.setConstraints(menu,rightConstraint);
-	    rightConstraint.fill = GridBagConstraints.BOTH;
-	    rightMainPanel.setLayout(rightLayout);
-		menu.add( rightMainPanel, mainConstraint );
-		
-		rightConstraint.gridx = 0;
-		rightConstraint.gridy = 0;
-		rightConstraint.gridwidth = 2;
-		Console = new JTextArea();
-		Console.setEditable( false );
-		Console.setLineWrap(true);
-		Console.setWrapStyleWord(true);
-		rightConstraint.gridx = 0;
-		rightConstraint.gridy = 0;
-		rightConstraint.weightx = 1;
-		rightConstraint.weighty = 1;
-		JScrollPane rightScrollPanel = new JScrollPane(Console); 
-		rightMainPanel.add( rightScrollPanel, rightConstraint );
+
 		
 		menu.setVisible( true );
 	}

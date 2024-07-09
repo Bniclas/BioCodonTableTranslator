@@ -68,10 +68,11 @@ public class menu {
 	
 	public static void showResults( String nucleinString, String results ) {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		double width = screenSize.getWidth() * 0.3;
-		double height = screenSize.getHeight() * 0.3;
+		double width = screenSize.getWidth() * 0.7;
+		double height = screenSize.getHeight() * 0.7;
 		
 		JDialog resultDialog = new JDialog();
+		resultDialog.setTitle("Analyse results");
 		resultDialog.setSize( (int)width, (int)height);
 		resultDialog.setLocationRelativeTo(null);
 	    GridBagLayout mainBagLayout = new GridBagLayout();
@@ -82,7 +83,7 @@ public class menu {
 	    
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 0;
-		mainConstraint.weightx = 0.5;
+		mainConstraint.weightx = 1;
 		mainConstraint.weighty = 0.8;
 		mainConstraint.gridwidth = 1;
 		
@@ -91,7 +92,16 @@ public class menu {
 		resultsConsole.setEditable( false );
 		resultsConsole.setLineWrap(true);
 		resultsConsole.setWrapStyleWord(true);
-		resultDialog.add( resultsConsole, mainConstraint );
+		JScrollPane leftScrollPanel = new JScrollPane(resultsConsole);
+		resultDialog.add( leftScrollPanel, mainConstraint );
+		
+		mainConstraint.weighty = 0.05;
+		
+		mainConstraint.gridx = 0;
+		mainConstraint.gridy = 8;
+		
+		JLabel nucleinStringLengthLabel = new JLabel("Size: " + biocodon.getNucleinLength( nucleinString ));
+		resultDialog.add( nucleinStringLengthLabel, mainConstraint );
 		
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 10;
@@ -119,7 +129,6 @@ public class menu {
 		
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 100;
-		mainConstraint.weighty = 0.1;
 		
 		JButton saveButton = new JButton("Save Results");
 		resultDialog.add( saveButton, mainConstraint );

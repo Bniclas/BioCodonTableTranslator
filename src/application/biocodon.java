@@ -500,4 +500,8 @@ public class biocodon {
 		return res;
 	}
 	
+	public static int getNucleinLength( String nucleinString ) {
+		return nucleinString.length();
+	}
+	
 }

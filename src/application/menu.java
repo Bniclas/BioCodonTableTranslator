@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -76,6 +77,8 @@ public class menu {
 		
 		JDialog resultDialog = new JDialog();
 		resultDialog.setTitle("Analyse results");
+		Image icon = Toolkit.getDefaultToolkit().getImage("ressources/menuicon.png");    
+		resultDialog.setIconImage(icon);    
 		resultDialog.setSize( (int)width, (int)height);
 		resultDialog.setLocationRelativeTo(null);
 	    GridBagLayout mainBagLayout = new GridBagLayout();
@@ -220,6 +223,9 @@ public class menu {
 		menu = new JFrame("Biocodon");
 		menu.setSize( (int)width, (int)height);
 		menu.setLocationRelativeTo(null);
+		Image icon = Toolkit.getDefaultToolkit().getImage("ressources/menuicon.png");    
+		menu.setIconImage(icon);    
+		
 	    GridBagLayout mainBagLayout = new GridBagLayout();
 	    GridBagConstraints mainConstraint = new GridBagConstraints();
 	    mainBagLayout.setConstraints(menu,mainConstraint);

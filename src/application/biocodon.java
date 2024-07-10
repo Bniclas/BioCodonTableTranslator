@@ -8,6 +8,9 @@ public class biocodon {
 	private static String nucleinAcid = "DNA"; // OR DNA
 	private static final Map<String , String> codonTable = new HashMap<String , String>();
 	private static final String stopCode = "*";
+	public static String getStopCodeSign() {
+		return stopCode;
+	}
 	@SuppressWarnings("serial")
 	private static final Map<Integer, String> translationSelection = new HashMap<Integer, String>() {{
 		put(1, "Standard");
@@ -63,7 +66,7 @@ public class biocodon {
 		add("Trp");
 		add("Val");
 		add("Arg");
-		add(stopCode);
+		add(getStopCodeSign());
 	}};
 	
 	
@@ -101,7 +104,7 @@ public class biocodon {
 	}
 	
 	public static void insertStopCodon( String triplet ) {
-		stopCodonList.put(triplet, "STOP");
+		stopCodonList.put(triplet, "*");
 	}
 	
 	public static void insertInitCodon( String triplet ) {
@@ -123,8 +126,8 @@ public class biocodon {
 	
 	public static void initOrganismNA() {
 		Map<String, String> overwrite = new HashMap<String , String> (){{
-			put("AGA",stopCode);
-			put("AGG",stopCode);
+			put("AGA",getStopCodeSign());
+			put("AGG",getStopCodeSign());
 			put("A#A","Met");
 			put("#GA","Trp");
 		}};
@@ -221,13 +224,13 @@ public class biocodon {
 		overwriteNAbyOrganism.put(21, overwrite);
 		
 		overwrite = new HashMap<String , String> (){{
-			put("#CA",stopCode);
+			put("#CA",getStopCodeSign());
 			put("#AG","Leu");
 		}};
 		overwriteNAbyOrganism.put(22, overwrite);
 		
 		overwrite = new HashMap<String , String> (){{
-			put("##A",stopCode);
+			put("##A",getStopCodeSign());
 		}};
 		overwriteNAbyOrganism.put(23, overwrite);
 		
@@ -368,12 +371,12 @@ public class biocodon {
 			U - Start
 		*/
 		codonTable.put(baseS+"GG", "Trp");
-		codonTable.put(baseS+"GA", stopCode);
+		codonTable.put(baseS+"GA", getStopCodeSign());
 		codonTable.put(baseS+"GC", "Cys");
 		codonTable.put(baseS+"G"+baseS, "Cys");
 		
-		codonTable.put(baseS+"AG", stopCode);
-		codonTable.put(baseS+"AA", stopCode);
+		codonTable.put(baseS+"AG", getStopCodeSign());
+		codonTable.put(baseS+"AA", getStopCodeSign());
 		codonTable.put(baseS+"AC", "Tyr");
 		codonTable.put(baseS+"A"+baseS, "Tyr");
 		
@@ -491,14 +494,14 @@ public class biocodon {
 			}
 			else if ( isStopCodon( triplet ) ) {
 				++partCounter;	
-				decodedNucleinAcid = decodedNucleinAcid + " " + stopCode + " \n";
+				decodedNucleinAcid = decodedNucleinAcid + " " + getStopCodeSign() + " \n";
 				/*
 				decodedNucleinAcid = decodedNucleinAcid + "\n";
 				decodedNucleinAcid = decodedNucleinAcid + "> ";
 				*/
 			}
 			else if ( nextTriplet != null && isInitCodon( nextTriplet ) && !isStopCodon(nextTriplet) ) {
-				decodedNucleinAcid = decodedNucleinAcid + codon + " (" + stopCode + ") \n";
+				decodedNucleinAcid = decodedNucleinAcid + codon + " (" + getStopCodeSign() + ") \n";
 			}
 			else {
 				decodedNucleinAcid = decodedNucleinAcid + codon;

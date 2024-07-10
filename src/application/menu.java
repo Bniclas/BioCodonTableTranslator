@@ -192,7 +192,7 @@ public class menu {
 		for (var entry : dataMap.entrySet()) {
 			boolean stopcodon = false;
 			boolean initcodon = false;
-			if ( entry.getValue() == "STOP" ) {
+			if ( entry.getValue() == biocodon.getStopCodeSign() ) {
 				stopcodon = true;
 			}
 			if ( entry.getValue() == "Met" ) {
@@ -390,7 +390,7 @@ public class menu {
 				  for (int i=0; i<triplettTable.getRowCount(); i++ ) {
 					  String triplet = (String) triplettTable.getValueAt(i, 0);
 					  
-					  if ( (boolean) triplettTable.getValueAt(i, 2) == true || triplet == "STOP" ) {
+					  if ( (boolean) triplettTable.getValueAt(i, 2) == true || triplet == biocodon.getStopCodeSign() ) {
 						  biocodon.insertStopCodon( triplet );
 					  }
 					  if ( (boolean) triplettTable.getValueAt(i, 3) == true ) {

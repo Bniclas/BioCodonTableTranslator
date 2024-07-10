@@ -45,7 +45,8 @@ public class menu {
             }
         }
 	};
-	private static JComboBox<String> chooseOrganism;
+	private static JComboBox<String> chooseTranslationTable;
+	private static JComboBox<String> chooseOrganismReference;
 	private static int organismTranslationID = 1;
 	
 	public menu() {
@@ -236,42 +237,54 @@ public class menu {
 		mainConstraint.weightx = 0.5;
 		mainConstraint.weighty = 1;
 		mainConstraint.gridwidth = 1;
-		mainConstraint.insets = new Insets( 5, 5, 5, 5 );
-		mainConstraint.ipadx = 5;
-		mainConstraint.ipady = 5;
 		
 		JPanel leftMainPanel = new JPanel();
 	    GridBagLayout leftLayout = new GridBagLayout();
 	    GridBagConstraints leftConstraint = new GridBagConstraints();
 	    leftLayout.setConstraints(menu,leftConstraint);
 	    leftConstraint.fill = GridBagConstraints.BOTH;
-	    leftConstraint.gridwidth = 2;
-	    leftMainPanel.setLayout(leftLayout);
-		
-		menu.add( leftMainPanel, mainConstraint );
-		
-		leftConstraint.gridx = 0;
-		leftConstraint.gridy = 5;
+	    leftConstraint.gridwidth = 1;
 		leftConstraint.insets = new Insets( 5, 5, 5, 5 );
 		leftConstraint.ipadx = 5;
 		leftConstraint.ipady = 5;
+	    leftMainPanel.setLayout(leftLayout);
+		menu.add( leftMainPanel, mainConstraint );
 		
-		chooseOrganism = new JComboBox();
+		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 2;
+		leftConstraint.weighty = 0.1;
+		JLabel translationLabel = new JLabel("Select Translation Table");
+		translationLabel.setFont(new Font("Calibri", Font.BOLD, 20));
+		leftMainPanel.add( translationLabel, leftConstraint );
+		
+		leftConstraint.gridx = 1;
+		JLabel organismLabel = new JLabel("Select Organism Reference Set");
+		organismLabel.setFont(new Font("Calibri", Font.BOLD, 20));
+		leftMainPanel.add( organismLabel, leftConstraint );
+		
+		leftConstraint.gridx = 0;
+		leftConstraint.gridy = 10;
+		chooseTranslationTable = new JComboBox();
 		for ( var entry : biocodon.getOrganismList().entrySet()) {
-			chooseOrganism.addItem( entry.getValue() );
+			chooseTranslationTable.addItem( entry.getValue() );
 		}
-		chooseOrganism.addActionListener (new ActionListener () {
+		chooseTranslationTable.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		    	for ( var entry: biocodon.getOrganismList().entrySet() ) {
-		    		if ( entry.getValue() == chooseOrganism.getSelectedItem() ) {
+		    		if ( entry.getValue() == chooseTranslationTable.getSelectedItem() ) {
 		    			organismTranslationID = entry.getKey();
 		    		}
 		    	}
 		    	refreshMenu();
 		    }
 		});
-		leftMainPanel.add(chooseOrganism, leftConstraint);
+		leftMainPanel.add(chooseTranslationTable, leftConstraint);
 		
+		leftConstraint.gridx = 1;
+		chooseOrganismReference = new JComboBox();
+		leftMainPanel.add(chooseOrganismReference, leftConstraint);
+		
+		leftConstraint.gridwidth = 2;
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 20;
 		leftConstraint.weightx = 0.5;

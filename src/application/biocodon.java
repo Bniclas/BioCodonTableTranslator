@@ -540,18 +540,26 @@ public class biocodon {
 		return nucleinString.length();
 	}
 	
-	public static int getNumberOfCodons( int sequenceLength ) {
-		return sequenceLength / 3;
+	public static int getL( Vector<String> tripletVector ) {
+		Map<String, Boolean> codonList = new HashMap<String, Boolean>();
+		
+		for ( int i=0; i<tripletVector.size(); i++ ) {
+			String tripletGiven = tripletVector.get(i);
+			
+			if ( codonList.get(tripletGiven) == null ) {
+				codonList.put(tripletGiven, true);
+			}
+		}
+		
+		return codonList.size();
 	}
 	
 	public static float getCodonAdaptationIndex( String inputString ) {
 		String codonString = codonList( inputString );
 		Vector<String> tripletVector = getCodonTriplets( codonString );
 		
-		float L = getSequenceLength( codonString );
 		float CAI = 1;
-		float nCodons = tripletVector.size();
-		float numberOfCodons = (float) getNumberOfCodons( (int) L );
+		float L = (float) getL( tripletVector );
 		
 		Map<String, Integer> Xi = new HashMap<String, Integer>();
 		Map<String, Integer> codonToTriplet = new HashMap<String, Integer>();
@@ -599,6 +607,7 @@ public class biocodon {
 		}
 		
 		//System.out.println( Ximax );
+
 		
 		for ( var entry : Xi.entrySet() ) {
 			float xi = entry.getValue();

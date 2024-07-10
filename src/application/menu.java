@@ -47,7 +47,7 @@ public class menu {
 	};
 	private static JComboBox<String> chooseTranslationTable;
 	private static JComboBox<String> chooseOrganismReference;
-	private static int organismTranslationID = 1;
+	private static int tableTranslationID = 1;
 	
 	public menu() {
 	    try {
@@ -62,7 +62,7 @@ public class menu {
 	    catch ( Exception e) {
 	      
 	    }
-	    biocodon.prepare( organismTranslationID );
+	    biocodon.prepare( tableTranslationID );
 	    createMenu();
 	    refreshMenu();
 	}
@@ -182,7 +182,7 @@ public class menu {
 	}
 	
 	public static void refreshMenu( ) {
-		biocodon.prepare( organismTranslationID );
+		biocodon.prepare( tableTranslationID );
 		model = new DefaultTableModel ( header, 0 );
 		Map<String, String> dataMap = biocodon.getTriplettTable();
 		
@@ -265,14 +265,14 @@ public class menu {
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 10;
 		chooseTranslationTable = new JComboBox();
-		for ( var entry : biocodon.getOrganismList().entrySet()) {
+		for ( var entry : biocodon.getTranslationtables().entrySet()) {
 			chooseTranslationTable.addItem( entry.getValue() );
 		}
 		chooseTranslationTable.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	for ( var entry: biocodon.getOrganismList().entrySet() ) {
+		    	for ( var entry: biocodon.getTranslationtables().entrySet() ) {
 		    		if ( entry.getValue() == chooseTranslationTable.getSelectedItem() ) {
-		    			organismTranslationID = entry.getKey();
+		    			tableTranslationID = entry.getKey();
 		    		}
 		    	}
 		    	refreshMenu();
@@ -391,11 +391,11 @@ public class menu {
 				  
 				  String result = "";
 				  if (rnaAcid.isSelected()) {
-					  biocodon.prepare( organismTranslationID );
+					  biocodon.prepare( tableTranslationID );
 					  result = biocodon.decode( inputData );
 				  }
 				  else {
-					  biocodon.prepare( organismTranslationID );
+					  biocodon.prepare( tableTranslationID );
 					  result = biocodon.decode( inputData );
 				  }
 				  showResults( inputData[0], result );

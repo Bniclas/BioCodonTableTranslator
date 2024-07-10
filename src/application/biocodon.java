@@ -9,7 +9,7 @@ public class biocodon {
 	private static final Map<String , String> codonTable = new HashMap<String , String>();
 	private static final String stopCode = "STOP";
 	@SuppressWarnings("serial")
-	private static final Map<Integer, String> organismSelection = new HashMap<Integer, String>() {{
+	private static final Map<Integer, String> translationSelection = new HashMap<Integer, String>() {{
 		put(1, "Standard");
 		put(2, "Vertebrate mitochondrial");
 		put(3, "Yeast mitochondrial");
@@ -40,7 +40,7 @@ public class biocodon {
 	private static final Map<String , String> stopCodonList = new HashMap<String , String>();
 	private static final Map<String , String> initCodonList = new HashMap<String , String>();
 	private static final Map<Integer, Object> overwriteNAbyOrganism = new HashMap<Integer, Object>();
-	private static int selectedOrganism = 1;
+	private static int selectedTable = 1;
 	private static final Vector<String> Aminoacids = new Vector<String>() {{
 		add("Ala");
 		add("Asn");
@@ -107,12 +107,12 @@ public class biocodon {
 		initCodonList.put(triplet, "INIT");
 	}
 
-	public static void setOrganism( int organismNumber ) {
-		selectedOrganism = organismNumber;
+	public static void settranslationTable( int tablenumber ) {
+		selectedTable = tablenumber;
 	}
 	
-	public static Map<Integer, String> getOrganismList(){
-		return organismSelection;
+	public static Map<Integer, String> getTranslationtables(){
+		return translationSelection;
 	}
 
 	
@@ -290,11 +290,11 @@ public class biocodon {
 	}
 	
 	public static void overwriteOrganismNA() {
-		if ( overwriteNAbyOrganism.get( selectedOrganism ) == null ) {
+		if ( overwriteNAbyOrganism.get( selectedTable ) == null ) {
 			return;
 		}
 		
-		Map<String, String> overwriteData = (HashMap) overwriteNAbyOrganism.get( selectedOrganism );
+		Map<String, String> overwriteData = (HashMap) overwriteNAbyOrganism.get( selectedTable );
 		
 		
 		for ( var entry : overwriteData.entrySet() ) {
@@ -304,7 +304,7 @@ public class biocodon {
 	}
 	
 	public static void prepare( int selectedOrganism ) {
-		setOrganism(selectedOrganism);
+		settranslationTable(selectedOrganism);
 		writeBasicRNAandDNA();
 		initOrganismNA();
 		overwriteOrganismNA();

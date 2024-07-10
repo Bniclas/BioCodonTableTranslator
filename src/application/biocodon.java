@@ -504,7 +504,7 @@ public class biocodon {
 			
 
 			if ( i < rnaParts.size()-1 && nextTriplet != null && !isInitCodon( nextTriplet ) && nextTriplet != null && !isStopCodon(nextTriplet) ) {
-				decodedNucleinAcid = decodedNucleinAcid + "<>";
+				decodedNucleinAcid = decodedNucleinAcid + " ";
 			}
 		}
 		
@@ -619,13 +619,34 @@ public class biocodon {
 			wi.add( result );
 		}
 		
-		//System.out.println( wi );
+		/*
+		for ( int i=0; i<L; i++ ) {
+			String triplet = tripletVector.get(i);
+			float value = 0;
+			float xi = Xi.get(triplet);
+			
+			String aminoacid = codonTable.get( triplet );
+			String ximaxTriplet = Ximax.get(aminoacid);
+			float ximax = Xi.get( ximaxTriplet );
+			
+			value = xi/ximax;
+			wi.add( value );
+		}
+		*/
+		
+		System.out.println( wi );
 		
 		
 		for ( int i=0; i<wi.size(); i++ ) {
 			CAI = CAI * wi.get(i);
 		}
 		
+		/*
+		for ( int i=0; i<wi.size(); i++ ) {
+			CAI = (float) (CAI + Math.log( wi.get(i) ));
+			System.out.println( (float) (CAI + Math.log( wi.get(i) )) );
+		}
+		*/
 		CAI = (float) Math.pow( CAI, 1/L );
 		
 		return CAI;

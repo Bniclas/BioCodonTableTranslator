@@ -1,8 +1,10 @@
 package application;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,7 +52,7 @@ public class menu {
 	    try {
 	        for ( LookAndFeelInfo info : UIManager.getInstalledLookAndFeels() ) {
 	        	//System.out.println( info.getName() );
-	            if ("Nimbus".equalsIgnoreCase(info.getName())) {
+	            if ("Windows".equalsIgnoreCase(info.getName())) {
 	                UIManager.setLookAndFeel(info.getClassName());
 	                break;
 	            }
@@ -67,8 +69,6 @@ public class menu {
 	
 	
 	public static void showResults( String nucleinString, String results ) {
-		float CodonAdaptionIndex = biocodon.getCodonAdaptationIndex( nucleinString );
-		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = screenSize.getWidth() * 0.7;
 		double height = screenSize.getHeight() * 0.7;
@@ -86,21 +86,33 @@ public class menu {
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 0;
 		mainConstraint.weightx = 1;
-		mainConstraint.weighty = 0.8;
+		mainConstraint.weighty = 0.1;
 		mainConstraint.gridwidth = 1;
+		mainConstraint.insets = new Insets( 5, 5, 5, 5 );
+		mainConstraint.ipadx = 5;
+		mainConstraint.ipady = 5;
 		
+		JLabel AminoAcidsInfo = new JLabel("Amino Acids");
+		AminoAcidsInfo.setFont(new Font("Calibri", Font.BOLD, 20));
+		resultDialog.add( AminoAcidsInfo, mainConstraint );
+		
+		mainConstraint.gridy = 6;
+		mainConstraint.weighty = 0.8;
 		JTextArea  resultsConsole = new JTextArea ();
 		resultsConsole.setText( results );
 		resultsConsole.setEditable( false );
-		resultsConsole.setLineWrap(true);
+		resultsConsole.setLineWrap(false);
 		resultsConsole.setWrapStyleWord(true);
 		JScrollPane leftScrollPanel = new JScrollPane(resultsConsole);
 		resultDialog.add( leftScrollPanel, mainConstraint );
+
 		
-		mainConstraint.weighty = 0.05;
+		mainConstraint.weighty = 0.1;
 		
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 8;
+		
+		float CodonAdaptionIndex = biocodon.getCodonAdaptationIndex( nucleinString );
 		
 		float thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
 		float adeninPerc = biocodon.getAmountOf( 'A', nucleinString );
@@ -111,44 +123,53 @@ public class menu {
 		float purinPerc = adeninPerc + guaninPerc;
 		float pyrimidinPerc = cytosinPerc + uracilPerc + thyminPerc;
 		
-		JLabel nucleinStringLengthLabel = new JLabel("Sequence Length: " + biocodon.getSequenceLength( nucleinString ) + " bases" );
-		resultDialog.add( nucleinStringLengthLabel, mainConstraint );
+		mainConstraint.gridx = 0;
+		mainConstraint.gridy = 34;
+		JLabel generalInfo = new JLabel("General Analysis Data");
+		generalInfo.setFont(new Font("Calibri", Font.BOLD, 20));
+		resultDialog.add( generalInfo, mainConstraint );
 		
 		mainConstraint.gridx = 0;
-		mainConstraint.gridy = 10;
+		mainConstraint.gridy = 40;
+		Object[] header;
 		
-		JLabel guaninAmount = new JLabel("Guanin: " + String.format("%.2f", guaninPerc) + " %" );
-		resultDialog.add( guaninAmount, mainConstraint );
-		
-		mainConstraint.gridy = 12;
-		JLabel cytosinAmount = new JLabel("Cytosin: " + String.format("%.2f", cytosinPerc) + " %" );
-		resultDialog.add( cytosinAmount, mainConstraint );
-		
-		mainConstraint.gridy = 14;
-		if ( biocodon.getNucleinAcid() == "DNA") {
-			JLabel thyminAmount = new JLabel("Thymin: " + String.format("%.2f", thyminPerc) + " %" );
-			resultDialog.add( thyminAmount, mainConstraint );
+		if ( biocodon.getNucleinAcid() == "DNA" ) {
+			header = new Object[] { "Sequence Length", "Adenin", "Thymin", "Guanin", "Cytosin", "Pyrimidinbases", "Purinbases" };
 		}
 		else {
-			JLabel uracilAmount = new JLabel("Uracil: " + String.format("%.2f", uracilPerc) + " %"  );
-			resultDialog.add( uracilAmount, mainConstraint );
+			header = new Object[] { "Sequence Length", "Adenin", "Uracil", "Guanin", "Cytosin", "Pyrimidinbases", "Purinbases" };
 		}
+		DefaultTableModel model = new DefaultTableModel ( header, 0 );
+		JTable generalAnalyseData = new JTable( model );
+		model.addRow(new Object[] { 
+				biocodon.getSequenceLength( nucleinString ) + " bases",
+				String.format("%.2f", adeninPerc ) + " %", 
+				String.format("%.2f", thyminPerc ) + " %", 
+				String.format("%.2f", guaninPerc ) + " %", 
+				String.format("%.2f", cytosinPerc ) + " %", 
+				String.format("%.2f", pyrimidinPerc ) + " %", 
+				String.format("%.2f", purinPerc ) + " %", 
+			}
+		);
+		resultDialog.add(new JScrollPane(generalAnalyseData), mainConstraint );
 		
-		mainConstraint.gridy = 16;
-		JLabel adeninAmount = new JLabel("Adenin: " + String.format("%.2f", adeninPerc) + " %" );
-		resultDialog.add( adeninAmount, mainConstraint );
+		mainConstraint.gridy = 50;
+		JLabel codonfrequencyData = new JLabel("Indices based on codon frequency in a reference set of genes");
+		codonfrequencyData.setFont(new Font("Calibri", Font.BOLD, 20));
+		resultDialog.add( codonfrequencyData, mainConstraint );
 		
-		mainConstraint.gridy = 18;
-		JLabel PyrimidinAmount = new JLabel("Pyrimidin: " + String.format("%.2f", pyrimidinPerc) + " %" );
-		resultDialog.add( PyrimidinAmount, mainConstraint );
-		
-		mainConstraint.gridy = 20;
-		JLabel PurinAmount = new JLabel("Purin: " + String.format("%.2f", purinPerc) + " %" );
-		resultDialog.add( PurinAmount, mainConstraint );
-		
-		mainConstraint.gridy = 30;
-		JLabel caiLabel = new JLabel("CAI (Codon Adaptation Index): " + String.format("%.2f", CodonAdaptionIndex ) );
-		resultDialog.add( caiLabel, mainConstraint );
+		mainConstraint.gridy = 52;
+		header = new Object[] { "Index", "Description", "Range", "Value" };
+		model = new DefaultTableModel ( header, 0 );
+		JTable frequencyDataTable = new JTable( model );
+		model.addRow(new Object[] { 
+				"CAI",
+				"Codon Adaptation Index",
+				"0-1",
+				String.format("%.2f", CodonAdaptionIndex )
+			}
+		);
+		resultDialog.add(new JScrollPane(frequencyDataTable), mainConstraint );
 		
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 100;
@@ -192,8 +213,8 @@ public class menu {
 	
 	public static void createMenu() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		double width = screenSize.getWidth() * 0.6;
-		double height = screenSize.getHeight() * 0.6;
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
 		
 		menu = new JFrame("Biocodon");
 		menu.setSize( (int)width, (int)height);
@@ -215,6 +236,9 @@ public class menu {
 		mainConstraint.weightx = 0.5;
 		mainConstraint.weighty = 1;
 		mainConstraint.gridwidth = 1;
+		mainConstraint.insets = new Insets( 5, 5, 5, 5 );
+		mainConstraint.ipadx = 5;
+		mainConstraint.ipady = 5;
 		
 		JPanel leftMainPanel = new JPanel();
 	    GridBagLayout leftLayout = new GridBagLayout();
@@ -228,6 +252,9 @@ public class menu {
 		
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 5;
+		leftConstraint.insets = new Insets( 5, 5, 5, 5 );
+		leftConstraint.ipadx = 5;
+		leftConstraint.ipady = 5;
 		
 		chooseOrganism = new JComboBox();
 		for ( var entry : biocodon.getOrganismList().entrySet()) {
@@ -295,14 +322,17 @@ public class menu {
 		infoLabel = new JLabel("Input from User: ");
 		leftMainPanel.add( infoLabel, leftConstraint );
 		
+		leftConstraint.weighty = 0.4;
 		leftConstraint.gridx = 1;
 		leftConstraint.gridy = 30;
 		codeInput = new JTextArea();
 		codeInput.setEditable( true );
-		codeInput.setLineWrap(true);
-		codeInput.setWrapStyleWord(true);
-		codeInput.setText( "AUG,AUA,AUC,UAG,AUG,UAG,AUG,UUG,UUC,AUG,UUC,CCU,UAA" );
-		leftMainPanel.add( codeInput, leftConstraint );
+		codeInput.setLineWrap( false );
+		codeInput.setWrapStyleWord( true );
+		codeInput.setText( "ATGGCTATCGACGAAAACAAACAGAAAGCGTTGGCGGCAGCACTGGGCCAGATTGAGAAACAATTTGGTAAAGGCTCCATCATGCGCCTGGGTGAAGACCGTTCCATGGATGTGGAAACCATCTCTACCGGTTCGCTTTCACTGGATATCGCGCTTGGGGCAGGTGGTCTGCCGATGGGCCGTATCGTCGAAATCTACGGACCGGAATCTTCCGGTAAAACCACGCTGACGCTGCAGGTGATCGCCGCAGCGCAGCGTGAAGGTAAAACCTGTGCGTTTATCGATGCTGAACACGCGCTGGACCCAATCTACGCACGTAAACTGGGCGTCGATATCGACAACCTGCTGTGCTCCCAGCCGGACACCGGCGAGCAGGCACTGGAAATCTGTGACGCCCTGGCGCGTTCTGGCGCAGTAGACGTTATCGTCGTTGACTCCGTGGCGGCACTGACGCCGAAAGCGGAAATCGAAGGCGAAATCGGCGACTCTCACATGGGCCTTGCGGCACGTATGATGAGCCAGGCGATGCGTAAGCTGGCGGGTAACCTGAAGCAGTCCAACACGCTGCTGATCTTCATCAACCAGATCCGTATGAAAATTGGTGTGATGTTCGGTAACCCGGAAACCACTACCGGTGGTAACGCGCTGAAATTCTACGCCTCTGTTCGTCTCGACATCCGTCGTATCGGCGCGGTGAAAGAGGGCGAAAACGTGGTGGGTAGCGAAACCCGCGTGAAAGTGGTGAAGAACAAAATCGCTGCGCCGTTTAAACAGGCTGAATTCCAGATCCTCTACGGCGAAGGTATCAACTTCTACGGCGAACTGGTTGACCTGGGCGTAAAAGAGAAGCTGATCGAGAAAGCAGGCGCGTGGTACAGCTACAAAGGTGAGAAGATCGGTCAGGGTAAAGCGAATGCGACTGCCTGGCTGAAAGATAACCCGGAAACCGCGAAAGAGATCGAGAAGAAAGTACGTGAGTTGCTGCTGAGCAACCCGAACTCAACGCCGGATTTCTCTGTAGATGATAGCGAAGGCGTAGCAGAAACTAACGAAGATTTTTAA" );
+		leftMainPanel.add(new JScrollPane(codeInput), leftConstraint );
+		
+		leftConstraint.weighty = 0.05;
 		
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 40;
@@ -360,7 +390,7 @@ public class menu {
 		});
 		leftMainPanel.add( runDecode, leftConstraint );
 
-		
+		menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		menu.setVisible( true );
 	}
 }

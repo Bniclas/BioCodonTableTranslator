@@ -117,6 +117,7 @@ public class menu {
 		mainConstraint.gridy = 8;
 		
 		float CodonAdaptionIndex = biocodon.getCodonAdaptationIndex( nucleinString );
+		float RelativeCodonBiasStrength = biocodon.getRelativeCodonBiasStrength( nucleinString );
 		
 		float thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
 		float adeninPerc = biocodon.getAmountOf( 'A', nucleinString );
@@ -171,6 +172,13 @@ public class menu {
 				"Codon Adaptation Index",
 				"0-1",
 				String.format("%.2f", CodonAdaptionIndex )
+			}
+		);
+		model.addRow(new Object[] { 
+				"RCBS",
+				"Relative Codon Bias Strength",
+				"≥0",
+				String.format("%.2f", RelativeCodonBiasStrength )
 			}
 		);
 		resultDialog.add(new JScrollPane(frequencyDataTable), mainConstraint );

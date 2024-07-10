@@ -535,6 +535,18 @@ public class biocodon {
 		return p;
 	}
 	
+	public static float getAmountOfAbs( Character ofWhat, String nucleinString ) {
+		float c = 0;
+		for (int i=0; i<nucleinString.length(); i++) {
+			Character compValue = (Character) nucleinString.charAt(i);
+			if ( compValue.equals(ofWhat) ) {
+				c++;
+			}
+		}
+		
+		return c;
+	}
+	
 	public static String getAmountOfAminoacids( String aminoacidString ) {
 		String res = "";
 		
@@ -553,8 +565,8 @@ public class biocodon {
 			}
 		}
 		
-		System.out.println( c );
-		System.out.println( codonString.length());
+		//System.out.println( c );
+		//System.out.println( codonString.length());
 		
 		return (codonString.length() - c*3);
 	}
@@ -647,7 +659,7 @@ public class biocodon {
 			String codedAminoacid = codonTable.get(entry.getKey());
 			float n_i = AminoacidsSameCodons.get(codedAminoacid);
 			
-			float rscu_ij = 1;
+			float rscu_ij = 0;
 			
 			for ( var codonData : getTriplettTable().entrySet() ) {
 				if ( !codonData.getValue().equalsIgnoreCase(codedAminoacid) ) {
@@ -695,6 +707,63 @@ public class biocodon {
 		CAI = (float) Math.exp( CAI );
 		
 		return CAI;
+	}
+	
+	public static float getRelativeCodonBiasStrength( String inputString ) {
+		String codonString = codonList( inputString );
+		Vector<Float> RCB_xyz = new Vector<Float>();
+		Vector<String> codonVector = getCodonTriplets( codonString );
+		Map<Character, Float> baseFrequency = new HashMap<Character, Float>();
+		float RCBS = 1;
+		float L = (float) getL( codonString );
+		
+		float f_t = biocodon.getAmountOfAbs( 'T', codonString );
+		float f_a = biocodon.getAmountOfAbs( 'A', codonString );
+		float f_u = biocodon.getAmountOfAbs( 'U', codonString );
+		float f_g = biocodon.getAmountOfAbs( 'G', codonString );
+		float f_c = biocodon.getAmountOfAbs( 'C', codonString );
+		
+		baseFrequency.put('T', f_t);
+		baseFrequency.put('A', f_a);
+		baseFrequency.put('U', f_u);
+		baseFrequency.put('G', f_g);
+		baseFrequency.put('C', f_c);
+		
+		Map<String, Float> Xi = getCodonFrequency( codonVector );
+		
+		for ( int i=0; i<L; i++ ) {
+			String codon = codonVector.get(i);
+			/*if ( RCB_xyz.get(codon) != null ) {
+				continue;
+			}*/
+			
+			Character x = codon.charAt(0);
+			Character y = codon.charAt(1);
+			Character z = codon.charAt(2);
+			
+			float val_x = baseFrequency.get(x);
+			float val_y = baseFrequency.get(y);
+			float val_z = baseFrequency.get(z);
+			
+			String xyz = "";
+			xyz = xyz +  x.toString();
+			xyz = xyz +  y.toString();
+			xyz = xyz +  z.toString();
+			float val_xyz = Xi.get( xyz );
+			
+			System.out.println( xyz );
+			System.out.println( val_xyz );
+			
+			float d_xyz = ( val_xyz - val_x * val_y * val_z ) /  (val_x * val_y * val_z);
+			RCB_xyz.add(d_xyz);
+		}
+		
+		for ( int i=0; i<L; i++ ) {
+			RCBS = 1 + RCBS * RCB_xyz.get(i);
+		}
+		RCBS = (float) Math.pow( RCBS, 1/L ) - 1;
+		
+		return RCBS;
 	}
 	
 }

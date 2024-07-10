@@ -559,19 +559,8 @@ public class biocodon {
 		return (codonString.length() - c*3);
 	}
 	
-	public static int getL( Vector<String> tripletVector ) {
-		Map<String, Boolean> codonList = new HashMap<String, Boolean>();
-		/*
-		for ( int i=0; i<tripletVector.size(); i++ ) {
-			String tripletGiven = tripletVector.get(i);
-
-			
-			if ( codonList.get(tripletGiven) == null ) {
-				codonList.put(tripletGiven, true);
-			}
-		} */
-		
-		return (tripletVector.size());
+	public static int getL( String nucleinString ) {
+		return ( getSequenceLength( nucleinString ) / 3 );
 	}
 	
 	public static Map<String, Float> getCodonFrequency( Vector<String> triplets ){
@@ -639,39 +628,24 @@ public class biocodon {
 		return SameCodingAmounts;
 	}
 	
+
 	public static float getCodonAdaptationIndex( String inputString ) {
 		String codonString = codonList( inputString );
 		Vector<String> tripletVector = getCodonTriplets( codonString );
 		
 		float CAI = 1;
-		float L = (float) getL( tripletVector );
+		float L = (float) getL( codonString );
 		
+		Map<String, Float> RSCU_ij = new HashMap<String, Float>();
 		Map<String, Float> Xi = getCodonFrequency( tripletVector );
 		Map<String, String> Ximax = getXimaxCodon( Xi );
+		Map<String, Float> AminoacidsSameCodons = getAmountSamecodingCodons( );
 		Vector<Float> wi = new Vector<Float>();
 		
-		System.out.println("Codons in Gene");
-		System.out.println(L);
-		
-		System.out.println("Xi Table");
-		System.out.println(Xi);
-		
-		System.out.println("Ximax Table");
-		System.out.println(Ximax);
-		
-		// RSCU(ij) for ATG
-		
-		Map<String, Float> AminoacidsSameCodons = getAmountSamecodingCodons( );
-		
 		for ( var entry : Xi.entrySet() ) {
-			if ( !entry.getKey().equalsIgnoreCase("ATT") ) {
-				continue;
-			}
-			
-			float x_ij = entry.getValue();
+			String codon = entry.getKey();
 			String codedAminoacid = codonTable.get(entry.getKey());
 			float n_i = AminoacidsSameCodons.get(codedAminoacid);
-			
 			
 			float rscu_ij = 1;
 			
@@ -686,19 +660,27 @@ public class biocodon {
 			
 			rscu_ij = 1/n_i * rscu_ij;
 			
-			System.out.println( rscu_ij );
+			RSCU_ij.put( entry.getKey(), rscu_ij );
 		}
+		System.out.println( RSCU_ij );
 		
-		for ( var entry : Xi.entrySet() ) {
+		for ( var entry : RSCU_ij.entrySet() ) {
 			float value = 0;
-			float xi = entry.getValue();
+			float rscu_ij = entry.getValue();
+			String codon = entry.getKey();
 			
-			String aminoacid = codonTable.get( entry.getKey() );
-			String ximaxCodon = Ximax.get(aminoacid);
-			float ximax = Xi.get( ximaxCodon );
+			String rscu_imax_amino = getTriplettTable().get( codon );
+			String rscu_imax_codon = Ximax.get( rscu_imax_amino );
+			float rscu_imax_value = RSCU_ij.get( codon );
 			
-			value = xi/ximax;
+			/*
+			System.out.println( codon );
+			System.out.println( rscu_imax_codon );
+			System.out.println( rscu_ij );
+			System.out.println( rscu_imax_value );
+			*/
 			
+			value = rscu_ij/rscu_imax_value;
 			wi.add( value );
 		}
 		

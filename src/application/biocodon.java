@@ -41,6 +41,29 @@ public class biocodon {
 	private static final Map<String , String> initCodonList = new HashMap<String , String>();
 	private static final Map<Integer, Object> overwriteNAbyOrganism = new HashMap<Integer, Object>();
 	private static int selectedOrganism = 1;
+	private static final Vector<String> Aminoacids = new Vector<String>() {{
+		add("Ala");
+		add("Asn");
+		add("Cys");
+		add("Gln");
+		add("His");
+		add("Leu");
+		add("Met");
+		add("Pro");
+		add("Thr");
+		add("Tyr");
+		add("Arg");
+		add("Asp");
+		add("Glu");
+		add("Gly");
+		add("Ile");
+		add("Lys");
+		add("Phe");
+		add("Ser");
+		add("Trp");
+		add("Val");
+		add("Arg");
+	}};
 	
 	
 	private static boolean isStopCodon( String triplet ) {
@@ -388,30 +411,44 @@ public class biocodon {
 		
 	}
 	
+	public static String codonList( String arg ) {
+		arg = arg.replaceAll(",", "");
+		arg = arg.replaceAll(";", "");
+		arg = arg.replaceAll(" ", "");
+		
+		return arg;
+	}
+	
+	public static Vector<String> getCodonTriplets( String codonString ){
+		Vector<String> tripletVector = new Vector<String>();
+		for ( int i=0; i<codonString.length(); i+=3 ) {
+			tripletVector.add( codonString.substring( i, i+3 ) );
+		}
+		
+		return tripletVector;
+	}
+	
 	public static String nucleinToAmino( String[] args ) {
 		int partCounter = 0;
-		Vector<String> rnaParts = new Vector<String>();
 		String codon = null;
 		String prevCodon = null;
 		String nextCodon = null;
 		String decodedNucleinAcid = "";
+		String codonString = codonList( args[0] );
+		Vector<String> rnaParts = getCodonTriplets( codonString );
 		
-		if ( args.length == 0 ) {
+		if ( codonString.length() == 0 ) {
 			System.out.println("Der angegebene Nucleinsäure Code ist fehlerhaft.");
 			return decodedNucleinAcid;
 		}
 		
-		args[0] = args[0].replaceAll(",", "");
-		args[0] = args[0].replaceAll(";", "");
-		args[0] = args[0].replaceAll(" ", "");
-		
-		if( args[0].length() % 3 != 0 ) {
+		if( codonString.length() % 3 != 0 ) {
 			System.out.println("Der angegebene Nucleinsäure Code ist fehlerhaft.");
 			return decodedNucleinAcid;
 		}
 		
-		for ( int i=0; i<args[0].length(); i+=3 ) {
-			rnaParts.add( args[0].substring( i, i+3 ) );
+		for ( int i=0; i<codonString.length(); i+=3 ) {
+			rnaParts.add( codonString.substring( i, i+3 ) );
 		}
 		
 		for ( int i=0; i<rnaParts.size(); i++ ) {
@@ -452,14 +489,14 @@ public class biocodon {
 			}
 			else if ( isStopCodon( triplet ) ) {
 				++partCounter;	
-				decodedNucleinAcid = decodedNucleinAcid + " * ";
+				decodedNucleinAcid = decodedNucleinAcid + " * \n";
 				/*
 				decodedNucleinAcid = decodedNucleinAcid + "\n";
 				decodedNucleinAcid = decodedNucleinAcid + "> ";
 				*/
 			}
 			else if ( nextTriplet != null && isInitCodon( nextTriplet ) && !isStopCodon(nextTriplet) ) {
-				decodedNucleinAcid = decodedNucleinAcid + codon + " (*) ";
+				decodedNucleinAcid = decodedNucleinAcid + codon + " (*) \n";
 			}
 			else {
 				decodedNucleinAcid = decodedNucleinAcid + codon;
@@ -478,10 +515,9 @@ public class biocodon {
 		return nucleinToAmino(args);
 	}
 	
-	public static String getAmountOf( Character ofWhat, String nucleinString ) {
+	public static float getAmountOf( Character ofWhat, String nucleinString ) {
 		float c = 0;
 		float p = 0;
-		String percentString;
 		for (int i=0; i<nucleinString.length(); i++) {
 			Character compValue = (Character) nucleinString.charAt(i);
 			if ( compValue.equals(ofWhat) ) {
@@ -489,10 +525,9 @@ public class biocodon {
 			}
 		}
 		p = c/nucleinString.length() * 100;
+	
 		
-		percentString = String.format("%.2f", p) + " %";
-		
-		return percentString;
+		return p;
 	}
 	
 	public static String getAmountOfAminoacids( String aminoacidString ) {
@@ -501,8 +536,90 @@ public class biocodon {
 		return res;
 	}
 	
-	public static int getNucleinLength( String nucleinString ) {
+	public static int getSequenceLength( String nucleinString ) {
 		return nucleinString.length();
+	}
+	
+	public static int getNumberOfCodons( int sequenceLength ) {
+		return sequenceLength / 3;
+	}
+	
+	public static float getCodonAdaptationIndex( String inputString ) {
+		String codonString = codonList( inputString );
+		Vector<String> tripletVector = getCodonTriplets( codonString );
+		
+		float L = getSequenceLength( codonString );
+		float CAI = 1;
+		float nCodons = tripletVector.size();
+		float numberOfCodons = (float) getNumberOfCodons( (int) L );
+		
+		Map<String, Integer> Xi = new HashMap<String, Integer>();
+		Map<String, Integer> codonToTriplet = new HashMap<String, Integer>();
+		Map<String, String> Ximax = new HashMap<String, String>();
+		Vector<Float> wi = new Vector<Float>();
+		
+		// Calculate the frequency of the codon
+		for ( int i=0; i<tripletVector.size(); i++ ) {
+			String triplet = tripletVector.get(i);
+			if ( isStopCodon( triplet ) ) {
+				continue;
+			}
+			if ( Xi.get( triplet ) == null ) {
+				Xi.put( triplet, 1 );
+			}
+			else {
+				int value = Xi.get( triplet );
+				++value;
+				Xi.put( triplet, value );
+			}
+		}
+		//System.out.println( codonFrequency );
+		
+		// Get the codon, that is most often for the same aminoacid
+		for ( String aminoacid : Aminoacids ) {
+			String highestCodon = "";
+			int highestValue = -1;
+			for ( var entry : Xi.entrySet() ) {
+				String codon = entry.getKey();
+				int value = entry.getValue();
+						
+				if ( highestValue == -1 ) {
+					highestCodon = codon;
+					highestValue = value;
+				}
+				else {
+					if ( highestValue < value ) {
+						highestCodon = codon;
+						highestValue = value;
+					}
+				}
+				
+				Ximax.put( aminoacid, highestCodon );
+			}
+		}
+		
+		//System.out.println( Ximax );
+		
+		for ( var entry : Xi.entrySet() ) {
+			float xi = entry.getValue();
+			String aminoacid = codonTable.get( entry.getKey() );
+			String ximaxCodon = Ximax.get( aminoacid );
+			int ximax = Xi.get( ximaxCodon );
+			
+			float result = xi / (float) ximax;
+			wi.add( result );
+		}
+		
+		//System.out.println( wi );
+		
+		
+		for ( int i=0; i<wi.size(); i++ ) {
+			CAI = CAI * wi.get(i);
+		}
+		
+		CAI = (float) Math.pow( CAI, 1/L );
+		
+		return CAI;
 	}
 	
 }

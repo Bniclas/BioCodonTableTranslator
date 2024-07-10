@@ -67,6 +67,8 @@ public class menu {
 	
 	
 	public static void showResults( String nucleinString, String results ) {
+		float CodonAdaptionIndex = biocodon.getCodonAdaptationIndex( nucleinString );
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = screenSize.getWidth() * 0.7;
 		double height = screenSize.getHeight() * 0.7;
@@ -100,32 +102,53 @@ public class menu {
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 8;
 		
-		JLabel nucleinStringLengthLabel = new JLabel("Size: " + biocodon.getNucleinLength( nucleinString ) + " bases" );
+		float thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
+		float adeninPerc = biocodon.getAmountOf( 'A', nucleinString );
+		float uracilPerc = biocodon.getAmountOf( 'U', nucleinString );
+		float guaninPerc = biocodon.getAmountOf( 'G', nucleinString );
+		float cytosinPerc = biocodon.getAmountOf( 'C', nucleinString );
+		
+		float purinPerc = adeninPerc + guaninPerc;
+		float pyrimidinPerc = cytosinPerc + uracilPerc + thyminPerc;
+		
+		JLabel nucleinStringLengthLabel = new JLabel("Sequence Length: " + biocodon.getSequenceLength( nucleinString ) + " bases" );
 		resultDialog.add( nucleinStringLengthLabel, mainConstraint );
 		
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 10;
 		
-		JLabel guaninAmount = new JLabel("Guanin: " + biocodon.getAmountOf( 'G', nucleinString ));
+		JLabel guaninAmount = new JLabel("Guanin: " + String.format("%.2f", guaninPerc) + " %" );
 		resultDialog.add( guaninAmount, mainConstraint );
 		
 		mainConstraint.gridy = 12;
-		JLabel cytosinAmount = new JLabel("Cytosin: " + biocodon.getAmountOf( 'C', nucleinString ));
+		JLabel cytosinAmount = new JLabel("Cytosin: " + String.format("%.2f", cytosinPerc) + " %" );
 		resultDialog.add( cytosinAmount, mainConstraint );
 		
 		mainConstraint.gridy = 14;
 		if ( biocodon.getNucleinAcid() == "DNA") {
-			JLabel thyminAmount = new JLabel("Thymin: " + biocodon.getAmountOf( 'T', nucleinString ) );
+			JLabel thyminAmount = new JLabel("Thymin: " + String.format("%.2f", thyminPerc) + " %" );
 			resultDialog.add( thyminAmount, mainConstraint );
 		}
 		else {
-			JLabel uracilAmount = new JLabel("Uracil: " + biocodon.getAmountOf( 'U', nucleinString ));
+			JLabel uracilAmount = new JLabel("Uracil: " + String.format("%.2f", uracilPerc) + " %"  );
 			resultDialog.add( uracilAmount, mainConstraint );
 		}
 		
 		mainConstraint.gridy = 16;
-		JLabel adeninAmount = new JLabel("Adenin: " + biocodon.getAmountOf( 'A', nucleinString ));
+		JLabel adeninAmount = new JLabel("Adenin: " + String.format("%.2f", adeninPerc) + " %" );
 		resultDialog.add( adeninAmount, mainConstraint );
+		
+		mainConstraint.gridy = 18;
+		JLabel PyrimidinAmount = new JLabel("Pyrimidin: " + String.format("%.2f", pyrimidinPerc) + " %" );
+		resultDialog.add( PyrimidinAmount, mainConstraint );
+		
+		mainConstraint.gridy = 20;
+		JLabel PurinAmount = new JLabel("Purin: " + String.format("%.2f", purinPerc) + " %" );
+		resultDialog.add( PurinAmount, mainConstraint );
+		
+		mainConstraint.gridy = 30;
+		JLabel caiLabel = new JLabel("CAI (Codon Adaptation Index): " + String.format("%.2f", CodonAdaptionIndex ) );
+		resultDialog.add( caiLabel, mainConstraint );
 		
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 100;

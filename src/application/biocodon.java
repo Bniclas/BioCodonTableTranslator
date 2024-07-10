@@ -413,6 +413,7 @@ public class biocodon {
 	}
 	
 	public static String codonList( String arg ) {
+		arg = arg.replaceAll("\n", "");
 		arg = arg.replaceAll(",", "");
 		arg = arg.replaceAll(";", "");
 		arg = arg.replaceAll(" ", "");
@@ -538,7 +539,21 @@ public class biocodon {
 	}
 	
 	public static int getSequenceLength( String nucleinString ) {
-		return nucleinString.length();
+		String codonString = codonList( nucleinString );
+		Vector<String> tripletVector = getCodonTriplets( codonString );
+		
+		int c = 0;
+		
+		for( int i=0; i<tripletVector.size(); i++ ) {
+			if ( isStopCodon( tripletVector.get(i) ) ) {
+				++c;
+			}
+		}
+		
+		System.out.println( c );
+		System.out.println( codonString.length());
+		
+		return (codonString.length() - c*3);
 	}
 	
 	public static int getL( Vector<String> tripletVector ) {

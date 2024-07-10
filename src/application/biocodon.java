@@ -395,7 +395,6 @@ public class biocodon {
 		String prevCodon = null;
 		String nextCodon = null;
 		String decodedNucleinAcid = "";
-		decodedNucleinAcid = decodedNucleinAcid + "";
 		
 		if ( args.length == 0 ) {
 			System.out.println("Der angegebene Nucleinsäure Code ist fehlerhaft.");
@@ -449,16 +448,18 @@ public class biocodon {
 
 			if (  isInitCodon( triplet ) && i != 0 ) {
 				++partCounter;
-				decodedNucleinAcid = decodedNucleinAcid + "\n";
-				decodedNucleinAcid = decodedNucleinAcid + "";
 				decodedNucleinAcid = decodedNucleinAcid + codon;
 			}
 			else if ( isStopCodon( triplet ) ) {
 				++partCounter;	
+				decodedNucleinAcid = decodedNucleinAcid + " * ";
 				/*
 				decodedNucleinAcid = decodedNucleinAcid + "\n";
 				decodedNucleinAcid = decodedNucleinAcid + "> ";
 				*/
+			}
+			else if ( nextTriplet != null && isInitCodon( nextTriplet ) && !isStopCodon(nextTriplet) ) {
+				decodedNucleinAcid = decodedNucleinAcid + codon + " (*) ";
 			}
 			else {
 				decodedNucleinAcid = decodedNucleinAcid + codon;
@@ -466,7 +467,7 @@ public class biocodon {
 			
 
 			if ( i < rnaParts.size()-1 && nextTriplet != null && !isInitCodon( nextTriplet ) && nextTriplet != null && !isStopCodon(nextTriplet) ) {
-				decodedNucleinAcid = decodedNucleinAcid + "-";
+				decodedNucleinAcid = decodedNucleinAcid + "<>";
 			}
 		}
 		

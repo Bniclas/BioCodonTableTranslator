@@ -100,7 +100,7 @@ public class menu {
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 8;
 		
-		JLabel nucleinStringLengthLabel = new JLabel("Size: " + biocodon.getNucleinLength( nucleinString ));
+		JLabel nucleinStringLengthLabel = new JLabel("Size: " + biocodon.getNucleinLength( nucleinString ) + " bases" );
 		resultDialog.add( nucleinStringLengthLabel, mainConstraint );
 		
 		mainConstraint.gridx = 0;

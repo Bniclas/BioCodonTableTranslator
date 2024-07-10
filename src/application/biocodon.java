@@ -622,6 +622,23 @@ public class biocodon {
 		return Ximax;
 	}
 	
+	public static Map<String, Float> getAmountSamecodingCodons( ){
+		Map<String, Float> SameCodingAmounts = new HashMap<String, Float>();
+		
+		for( var entry : getTriplettTable().entrySet() ) {
+			if ( SameCodingAmounts.get( entry.getValue() ) == null ) {
+				SameCodingAmounts.put( entry.getValue(), (float) 1 );
+			}
+			else {
+				float value = SameCodingAmounts.get( entry.getValue() );
+				++value;
+				SameCodingAmounts.put( entry.getValue(), value );
+			}
+		}
+		
+		return SameCodingAmounts;
+	}
+	
 	public static float getCodonAdaptationIndex( String inputString ) {
 		String codonString = codonList( inputString );
 		Vector<String> tripletVector = getCodonTriplets( codonString );
@@ -641,7 +658,36 @@ public class biocodon {
 		
 		System.out.println("Ximax Table");
 		System.out.println(Ximax);
-
+		
+		// RSCU(ij) for ATG
+		
+		Map<String, Float> AminoacidsSameCodons = getAmountSamecodingCodons( );
+		
+		for ( var entry : Xi.entrySet() ) {
+			if ( !entry.getKey().equalsIgnoreCase("ATT") ) {
+				continue;
+			}
+			
+			float x_ij = entry.getValue();
+			String codedAminoacid = codonTable.get(entry.getKey());
+			float n_i = AminoacidsSameCodons.get(codedAminoacid);
+			
+			
+			float rscu_ij = 1;
+			
+			for ( var codonData : getTriplettTable().entrySet() ) {
+				if ( !codonData.getValue().equalsIgnoreCase(codedAminoacid) ) {
+					continue;
+				}
+				if ( Xi.get( codonData.getKey() ) != null ) {
+					rscu_ij = rscu_ij + Xi.get( codonData.getKey() );
+				}
+			}
+			
+			rscu_ij = 1/n_i * rscu_ij;
+			
+			System.out.println( rscu_ij );
+		}
 		
 		for ( var entry : Xi.entrySet() ) {
 			float value = 0;

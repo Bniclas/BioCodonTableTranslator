@@ -314,26 +314,29 @@ public class menu {
 		leftConstraint.gridwidth = 1;
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 27;
-		JRadioButton rnaAcid = new JRadioButton ("RNA", true);
-		rnaAcid.addActionListener (new ActionListener () {
-		    public void actionPerformed(ActionEvent e) {
-		    	biocodon.setNucleinAcid("RNA");
-		    	refreshMenu();
-		    }
-		});
-		JRadioButton dnaAcid = new JRadioButton ("DNA", false);
+		
+		JRadioButton dnaAcid = new JRadioButton ("DNA", true);
 		dnaAcid.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		    	biocodon.setNucleinAcid("DNA");
 		    	refreshMenu();
 		    }
 		});
+		
+		JRadioButton rnaAcid = new JRadioButton ("RNA", false);
+		rnaAcid.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	biocodon.setNucleinAcid("RNA");
+		    	refreshMenu();
+		    }
+		});
+		
 		ButtonGroup group = new ButtonGroup();
 		group.add( rnaAcid );
 		group.add( dnaAcid );
-		leftMainPanel.add( rnaAcid, leftConstraint );
-		leftConstraint.gridx = 1;
 		leftMainPanel.add( dnaAcid, leftConstraint );
+		leftConstraint.gridx = 1;
+		leftMainPanel.add( rnaAcid, leftConstraint );
 		leftConstraint.gridwidth = 2;
 		
 		leftConstraint.gridx = 0;

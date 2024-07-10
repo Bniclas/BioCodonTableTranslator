@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class biocodon {
-	private static String nucleinAcid = "RNA"; // OR DNA
+	private static String nucleinAcid = "DNA"; // OR DNA
 	private static final Map<String , String> codonTable = new HashMap<String , String>();
-	private static final String stopCode = "STOP";
+	private static final String stopCode = "*";
 	@SuppressWarnings("serial")
 	private static final Map<Integer, String> translationSelection = new HashMap<Integer, String>() {{
 		put(1, "Standard");
@@ -63,6 +63,7 @@ public class biocodon {
 		add("Trp");
 		add("Val");
 		add("Arg");
+		add(stopCode);
 	}};
 	
 	
@@ -489,14 +490,14 @@ public class biocodon {
 			}
 			else if ( isStopCodon( triplet ) ) {
 				++partCounter;	
-				decodedNucleinAcid = decodedNucleinAcid + " * \n";
+				decodedNucleinAcid = decodedNucleinAcid + " " + stopCode + " \n";
 				/*
 				decodedNucleinAcid = decodedNucleinAcid + "\n";
 				decodedNucleinAcid = decodedNucleinAcid + "> ";
 				*/
 			}
 			else if ( nextTriplet != null && isInitCodon( nextTriplet ) && !isStopCodon(nextTriplet) ) {
-				decodedNucleinAcid = decodedNucleinAcid + codon + " (*) \n";
+				decodedNucleinAcid = decodedNucleinAcid + codon + " (" + stopCode + ") \n";
 			}
 			else {
 				decodedNucleinAcid = decodedNucleinAcid + codon;
@@ -542,54 +543,48 @@ public class biocodon {
 	
 	public static int getL( Vector<String> tripletVector ) {
 		Map<String, Boolean> codonList = new HashMap<String, Boolean>();
-		
+		/*
 		for ( int i=0; i<tripletVector.size(); i++ ) {
 			String tripletGiven = tripletVector.get(i);
+
 			
 			if ( codonList.get(tripletGiven) == null ) {
 				codonList.put(tripletGiven, true);
 			}
-		}
+		} */
 		
-		return codonList.size();
+		return (tripletVector.size());
 	}
 	
-	public static float getCodonAdaptationIndex( String inputString ) {
-		String codonString = codonList( inputString );
-		Vector<String> tripletVector = getCodonTriplets( codonString );
-		
-		float CAI = 1;
-		float L = (float) getL( tripletVector );
-		
-		Map<String, Integer> Xi = new HashMap<String, Integer>();
-		Map<String, Integer> codonToTriplet = new HashMap<String, Integer>();
-		Map<String, String> Ximax = new HashMap<String, String>();
-		Vector<Float> wi = new Vector<Float>();
+	public static Map<String, Float> getCodonFrequency( Vector<String> triplets ){
+		Map<String, Float> Xi = new HashMap<String, Float>();
 		
 		// Calculate the frequency of the codon
-		for ( int i=0; i<tripletVector.size(); i++ ) {
-			String triplet = tripletVector.get(i);
-			if ( isStopCodon( triplet ) ) {
-				continue;
-			}
-			if ( Xi.get( triplet ) == null ) {
-				Xi.put( triplet, 1 );
+		for ( int i=0; i<triplets.size(); i++ ) {
+			String codon = triplets.get(i);
+
+			if ( Xi.get( codon ) == null ) {
+				Xi.put( codon, (float) 1 );
 			}
 			else {
-				int value = Xi.get( triplet );
+				float value = Xi.get( codon );
 				++value;
-				Xi.put( triplet, value );
+				Xi.put( codon, value );
 			}
 		}
-		//System.out.println( codonFrequency );
 		
-		// Get the codon, that is most often for the same aminoacid
+		return Xi;
+	}
+	
+	public static Map<String, String> getXimaxCodon( Map<String, Float> XiValues ){
+		Map<String, String> Ximax = new HashMap<String, String>();
+		
 		for ( String aminoacid : Aminoacids ) {
 			String highestCodon = "";
-			int highestValue = -1;
-			for ( var entry : Xi.entrySet() ) {
+			float highestValue = -1;
+			for ( var entry : XiValues.entrySet() ) {
 				String codon = entry.getKey();
-				int value = entry.getValue();
+				float value = entry.getValue();
 						
 				if ( highestValue == -1 ) {
 					highestCodon = codon;
@@ -606,48 +601,52 @@ public class biocodon {
 			}
 		}
 		
-		//System.out.println( Ximax );
+		return Ximax;
+	}
+	
+	public static float getCodonAdaptationIndex( String inputString ) {
+		String codonString = codonList( inputString );
+		Vector<String> tripletVector = getCodonTriplets( codonString );
+		
+		float CAI = 1;
+		float L = (float) getL( tripletVector );
+		
+		Map<String, Float> Xi = getCodonFrequency( tripletVector );
+		Map<String, String> Ximax = getXimaxCodon( Xi );
+		Vector<Float> wi = new Vector<Float>();
+		
+		System.out.println("Codons in Gene");
+		System.out.println(L);
+		
+		System.out.println("Xi Table");
+		System.out.println(Xi);
+		
+		System.out.println("Ximax Table");
+		System.out.println(Ximax);
 
 		
 		for ( var entry : Xi.entrySet() ) {
-			float xi = entry.getValue();
-			String aminoacid = codonTable.get( entry.getKey() );
-			String ximaxCodon = Ximax.get( aminoacid );
-			int ximax = Xi.get( ximaxCodon );
-			
-			float result = xi / (float) ximax;
-			wi.add( result );
-		}
-		
-		/*
-		for ( int i=0; i<L; i++ ) {
-			String triplet = tripletVector.get(i);
 			float value = 0;
-			float xi = Xi.get(triplet);
+			float xi = entry.getValue();
 			
-			String aminoacid = codonTable.get( triplet );
-			String ximaxTriplet = Ximax.get(aminoacid);
-			float ximax = Xi.get( ximaxTriplet );
+			String aminoacid = codonTable.get( entry.getKey() );
+			String ximaxCodon = Ximax.get(aminoacid);
+			float ximax = Xi.get( ximaxCodon );
 			
 			value = xi/ximax;
+			
 			wi.add( value );
 		}
-		*/
 		
-		System.out.println( wi );
+		System.out.println("wi Table");
+		System.out.println(wi);
 		
 		
 		for ( int i=0; i<wi.size(); i++ ) {
 			CAI = CAI * wi.get(i);
 		}
 		
-		/*
-		for ( int i=0; i<wi.size(); i++ ) {
-			CAI = (float) (CAI + Math.log( wi.get(i) ));
-			System.out.println( (float) (CAI + Math.log( wi.get(i) )) );
-		}
-		*/
-		CAI = (float) Math.pow( CAI, 1/L );
+		CAI = (float) Math.pow( CAI, (float) 1/L );
 		
 		return CAI;
 	}

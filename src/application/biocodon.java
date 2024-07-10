@@ -662,7 +662,7 @@ public class biocodon {
 			
 			RSCU_ij.put( entry.getKey(), rscu_ij );
 		}
-		System.out.println( RSCU_ij );
+		//System.out.println( RSCU_ij );
 		
 		for ( var entry : RSCU_ij.entrySet() ) {
 			float value = 0;
@@ -671,7 +671,7 @@ public class biocodon {
 			
 			String rscu_imax_amino = getTriplettTable().get( codon );
 			String rscu_imax_codon = Ximax.get( rscu_imax_amino );
-			float rscu_imax_value = RSCU_ij.get( codon );
+			float rscu_imax_value = RSCU_ij.get( rscu_imax_codon );
 			
 			/*
 			System.out.println( codon );
@@ -684,15 +684,15 @@ public class biocodon {
 			wi.add( value );
 		}
 		
-		System.out.println("wi Table");
-		System.out.println(wi);
+		//System.out.println("wi Table");
+		//System.out.println(wi);
 		
 		
 		for ( int i=0; i<wi.size(); i++ ) {
-			CAI = CAI * wi.get(i);
+			CAI = CAI + (float) Math.log( wi.get(i) );
 		}
-		
-		CAI = (float) Math.pow( CAI, (float) 1/L );
+		CAI = 1/L * CAI;
+		CAI = (float) Math.exp( CAI );
 		
 		return CAI;
 	}

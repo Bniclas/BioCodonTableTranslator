@@ -124,6 +124,7 @@ public class menu {
 		double gc2Content = biocodon.getGCContentPos( nucleinString, 1 );
 		double gc3Content = biocodon.getGCContentPos( nucleinString, 2 );
 		double CPS = biocodon.getCodonPairScore( nucleinString );
+		double DCBS = biocodon.getDirectionalCodonBiasScore( nucleinString );
 		
 		double thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
 		double adeninPerc = biocodon.getAmountOf( 'A', nucleinString );
@@ -178,6 +179,13 @@ public class menu {
 		model = new DefaultTableModel ( header, 0 );
 		mainConstraint.weighty = 0.3;
 		JTable frequencyDataTable = new JTable( model );
+		model.addRow(new Object[] { 
+				"DCBS",
+				"Directional Codon Bias Score",
+				"≥1",
+				String.format("%.2f", DCBS )
+			}
+		);
 		model.addRow(new Object[] { 
 				"CAI",
 				"Codon Adaptation Index",

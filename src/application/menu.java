@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -116,8 +117,8 @@ public class menu {
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 8;
 		
-		float CodonAdaptionIndex = biocodon.getCodonAdaptationIndex( nucleinString );
-		float RelativeCodonBiasStrength = biocodon.getRelativeCodonBiasStrength( nucleinString );
+		double CodonAdaptionIndex = biocodon.getCodonAdaptationIndex( nucleinString );
+		double RelativeCodonBiasStrength = biocodon.getRelativeCodonBiasStrength( nucleinString );
 		
 		float thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
 		float adeninPerc = biocodon.getAmountOf( 'A', nucleinString );

@@ -1,6 +1,7 @@
 package application;
 
 import java.util.Map;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -547,6 +548,19 @@ public class biocodon {
 		return c;
 	}
 	
+	public static float getAmountOfAbsAtPos( Character ofWhat, Vector<String> tripletVector, int Position ) {
+		float c = 0;
+		for (int i=0; i<tripletVector.size(); i++) {
+			String codon = tripletVector.get(i);
+			Character compValue = (Character) codon.charAt( Position );
+			if ( compValue.equals(ofWhat) ) {
+				c++;
+			}
+		}
+		
+		return c;
+	}
+	
 	public static String getAmountOfAminoacids( String aminoacidString ) {
 		String res = "";
 		
@@ -571,22 +585,22 @@ public class biocodon {
 		return (codonString.length() - c*3);
 	}
 	
-	public static int getL( String nucleinString ) {
+	public static float getL( String nucleinString ) {
 		return ( getSequenceLength( nucleinString ) / 3 );
 	}
 	
-	public static Map<String, Float> getCodonFrequency( Vector<String> triplets ){
-		Map<String, Float> Xi = new HashMap<String, Float>();
+	public static Map<String, Double> getCodonFrequency( Vector<String> triplets ){
+		Map<String, Double> Xi = new HashMap<String, Double>();
 		
 		// Calculate the frequency of the codon
 		for ( int i=0; i<triplets.size(); i++ ) {
 			String codon = triplets.get(i);
 
 			if ( Xi.get( codon ) == null ) {
-				Xi.put( codon, (float) 1 );
+				Xi.put( codon, 1.0 );
 			}
 			else {
-				float value = Xi.get( codon );
+				double value = Xi.get( codon );
 				++value;
 				Xi.put( codon, value );
 			}
@@ -595,15 +609,15 @@ public class biocodon {
 		return Xi;
 	}
 	
-	public static Map<String, String> getXimaxCodon( Map<String, Float> XiValues ){
+	public static Map<String, String> getXimaxCodon( Map<String, Double> XiValues ){
 		Map<String, String> Ximax = new HashMap<String, String>();
 		
 		for ( String aminoacid : Aminoacids ) {
 			String highestCodon = "";
-			float highestValue = -1;
+			double highestValue = -1;
 			for ( var entry : XiValues.entrySet() ) {
 				String codon = entry.getKey();
-				float value = entry.getValue();
+				double value = entry.getValue();
 						
 				if ( highestValue == -1 ) {
 					highestCodon = codon;
@@ -623,15 +637,15 @@ public class biocodon {
 		return Ximax;
 	}
 	
-	public static Map<String, Float> getAmountSamecodingCodons( ){
-		Map<String, Float> SameCodingAmounts = new HashMap<String, Float>();
+	public static Map<String, Double> getAmountSamecodingCodons( ){
+		Map<String, Double> SameCodingAmounts = new HashMap<String, Double>();
 		
 		for( var entry : getTriplettTable().entrySet() ) {
 			if ( SameCodingAmounts.get( entry.getValue() ) == null ) {
-				SameCodingAmounts.put( entry.getValue(), (float) 1 );
+				SameCodingAmounts.put( entry.getValue(), 1.0 );
 			}
 			else {
-				float value = SameCodingAmounts.get( entry.getValue() );
+				double value = SameCodingAmounts.get( entry.getValue() );
 				++value;
 				SameCodingAmounts.put( entry.getValue(), value );
 			}
@@ -641,25 +655,25 @@ public class biocodon {
 	}
 	
 
-	public static float getCodonAdaptationIndex( String inputString ) {
+	public static double getCodonAdaptationIndex( String inputString ) {
 		String codonString = codonList( inputString );
 		Vector<String> tripletVector = getCodonTriplets( codonString );
 		
-		float CAI = 1;
-		float L = (float) getL( codonString );
+		double CAI = 1;
+		double L = getL( codonString );
 		
-		Map<String, Float> RSCU_ij = new HashMap<String, Float>();
-		Map<String, Float> Xi = getCodonFrequency( tripletVector );
+		Map<String, Double> RSCU_ij = new HashMap<String, Double>();
+		Map<String, Double> Xi = getCodonFrequency( tripletVector );
 		Map<String, String> Ximax = getXimaxCodon( Xi );
-		Map<String, Float> AminoacidsSameCodons = getAmountSamecodingCodons( );
-		Vector<Float> wi = new Vector<Float>();
+		Map<String, Double> AminoacidsSameCodons = getAmountSamecodingCodons( );
+		Vector<Double> wi = new Vector<Double>();
 		
 		for ( var entry : Xi.entrySet() ) {
 			String codon = entry.getKey();
 			String codedAminoacid = codonTable.get(entry.getKey());
-			float n_i = AminoacidsSameCodons.get(codedAminoacid);
+			double n_i = AminoacidsSameCodons.get(codedAminoacid);
 			
-			float rscu_ij = 0;
+			double rscu_ij = 0;
 			
 			for ( var codonData : getTriplettTable().entrySet() ) {
 				if ( !codonData.getValue().equalsIgnoreCase(codedAminoacid) ) {
@@ -677,13 +691,13 @@ public class biocodon {
 		//System.out.println( RSCU_ij );
 		
 		for ( var entry : RSCU_ij.entrySet() ) {
-			float value = 0;
-			float rscu_ij = entry.getValue();
+			double value = 0;
+			double rscu_ij = entry.getValue();
 			String codon = entry.getKey();
 			
 			String rscu_imax_amino = getTriplettTable().get( codon );
 			String rscu_imax_codon = Ximax.get( rscu_imax_amino );
-			float rscu_imax_value = RSCU_ij.get( rscu_imax_codon );
+			double rscu_imax_value = RSCU_ij.get( rscu_imax_codon );
 			
 			/*
 			System.out.println( codon );
@@ -701,7 +715,8 @@ public class biocodon {
 		
 		
 		for ( int i=0; i<wi.size(); i++ ) {
-			CAI = CAI + (float) Math.log( wi.get(i) );
+			float value = (float) Math.log( wi.get(i) );
+			CAI = CAI + value;
 		}
 		CAI = 1/L * CAI;
 		CAI = (float) Math.exp( CAI );
@@ -709,59 +724,101 @@ public class biocodon {
 		return CAI;
 	}
 	
-	public static float getRelativeCodonBiasStrength( String inputString ) {
+	public static double getRelativeCodonBiasStrength( String inputString ) {
 		String codonString = codonList( inputString );
-		Vector<Float> RCB_xyz = new Vector<Float>();
+		Vector<Double> RCB_xyz = new Vector<Double>();
 		Vector<String> codonVector = getCodonTriplets( codonString );
-		Map<Character, Float> baseFrequency = new HashMap<Character, Float>();
-		float RCBS = 1;
-		float L = (float) getL( codonString );
+		Map<String, Double> codonCache = new HashMap<String, Double>();
+		Map<String, Double> baseFrequency = new HashMap<String, Double>();
+		double RCBS = 1.000f;
+		double L = getL( codonString );
 		
-		float f_t = biocodon.getAmountOfAbs( 'T', codonString );
-		float f_a = biocodon.getAmountOfAbs( 'A', codonString );
-		float f_u = biocodon.getAmountOfAbs( 'U', codonString );
-		float f_g = biocodon.getAmountOfAbs( 'G', codonString );
-		float f_c = biocodon.getAmountOfAbs( 'C', codonString );
+		double f_a_1 = biocodon.getAmountOfAbsAtPos( 'A', codonVector, 0 );
+		double f_a_2 = biocodon.getAmountOfAbsAtPos( 'A', codonVector, 1 );
+		double f_a_3 = biocodon.getAmountOfAbsAtPos( 'A', codonVector, 2 );
 		
-		baseFrequency.put('T', f_t);
-		baseFrequency.put('A', f_a);
-		baseFrequency.put('U', f_u);
-		baseFrequency.put('G', f_g);
-		baseFrequency.put('C', f_c);
+		double f_g_1 = biocodon.getAmountOfAbsAtPos( 'G', codonVector, 0 );
+		double f_g_2 = biocodon.getAmountOfAbsAtPos( 'G', codonVector, 1 );
+		double f_g_3 = biocodon.getAmountOfAbsAtPos( 'G', codonVector, 2 );
 		
-		Map<String, Float> Xi = getCodonFrequency( codonVector );
+		double f_c_1 = biocodon.getAmountOfAbsAtPos( 'C', codonVector, 0 );
+		double f_c_2 = biocodon.getAmountOfAbsAtPos( 'C', codonVector, 1 );
+		double f_c_3 = biocodon.getAmountOfAbsAtPos( 'C', codonVector, 2 );
 		
-		for ( int i=0; i<L; i++ ) {
+		double f_u_1 = biocodon.getAmountOfAbsAtPos( 'U', codonVector, 0 );
+		double f_u_2 = biocodon.getAmountOfAbsAtPos( 'U', codonVector, 1 );
+		double f_u_3 = biocodon.getAmountOfAbsAtPos( 'U', codonVector, 2 );
+		
+		double f_t_1 = biocodon.getAmountOfAbsAtPos( 'T', codonVector, 0 );
+		double f_t_2 = biocodon.getAmountOfAbsAtPos( 'T', codonVector, 1 );
+		double f_t_3 = biocodon.getAmountOfAbsAtPos( 'T', codonVector, 2 );
+		
+		
+		baseFrequency.put("1A", f_a_1);
+		baseFrequency.put("2A", f_a_2);
+		baseFrequency.put("3A", f_a_3);
+		
+		baseFrequency.put("1G", f_g_1);
+		baseFrequency.put("2G", f_g_2);
+		baseFrequency.put("3G", f_g_3);
+		
+		baseFrequency.put("1C", f_c_1);
+		baseFrequency.put("2C", f_c_2);
+		baseFrequency.put("3C", f_c_3);
+		
+		baseFrequency.put("1U", f_u_1);
+		baseFrequency.put("2U", f_u_2);
+		baseFrequency.put("3U", f_u_3);
+		
+		baseFrequency.put("1T", f_t_1);
+		baseFrequency.put("2T", f_t_2);
+		baseFrequency.put("3T", f_t_3);
+
+
+		
+		Map<String, Double> Xi = getCodonFrequency( codonVector );
+		
+		for ( int i=0; i<codonVector.size(); i++ ) {
 			String codon = codonVector.get(i);
-			/*if ( RCB_xyz.get(codon) != null ) {
+			/*if ( codonCache.get(codon) != null ) {
 				continue;
-			}*/
+			}
+			*/
 			
 			Character x = codon.charAt(0);
 			Character y = codon.charAt(1);
 			Character z = codon.charAt(2);
 			
-			float val_x = baseFrequency.get(x);
-			float val_y = baseFrequency.get(y);
-			float val_z = baseFrequency.get(z);
+			double val_x_1 = baseFrequency.get( Integer.toString(1)+x );
+			double val_y_2 = baseFrequency.get( Integer.toString(2)+y );
+			double val_z_3 = baseFrequency.get( Integer.toString(3)+z );
 			
 			String xyz = "";
 			xyz = xyz +  x.toString();
 			xyz = xyz +  y.toString();
 			xyz = xyz +  z.toString();
-			float val_xyz = Xi.get( xyz );
+			double val_xyz = Xi.get( xyz );
+			//codonCache.put( xyz, (float) 1 );
 			
-			System.out.println( xyz );
-			System.out.println( val_xyz );
+			//System.out.println( xyz );
+			//System.out.println( val_xyz );
 			
-			float d_xyz = ( val_xyz - val_x * val_y * val_z ) /  (val_x * val_y * val_z);
+			double d_xyz = ( val_xyz - val_x_1 * val_y_2 * val_z_3 ) /  (val_x_1 * val_y_2 * val_z_3);
 			RCB_xyz.add(d_xyz);
 		}
+		//System.out.println( RCB_xyz );
 		
-		for ( int i=0; i<L; i++ ) {
-			RCBS = 1 + RCBS * RCB_xyz.get(i);
+		System.out.println( RCBS );
+		
+		for ( int i=0; i<RCB_xyz.size(); i++ ) {
+			double value = RCB_xyz.get(i);
+			value = value + 1;
+			
+			RCBS = value * RCBS;
+			System.out.println( RCBS );
 		}
-		RCBS = (float) Math.pow( RCBS, 1/L ) - 1;
+		double  denom = 1/L;
+		RCBS = ( double ) Math.pow( RCBS, denom ) - 1;
 		
 		return RCBS;
 	}

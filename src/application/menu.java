@@ -73,8 +73,8 @@ public class menu {
 	
 	public static void showResults( String nucleinString, String results ) {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		double width = screenSize.getWidth() * 0.7;
-		double height = screenSize.getHeight() * 0.7;
+		double width = screenSize.getWidth() * 0.8;
+		double height = screenSize.getHeight() * 0.8;
 		
 		JDialog resultDialog = new JDialog();
 		resultDialog.setTitle("Analyse results");
@@ -119,15 +119,21 @@ public class menu {
 		
 		double CodonAdaptionIndex = biocodon.getCodonAdaptationIndex( nucleinString );
 		double RelativeCodonBiasStrength = biocodon.getRelativeCodonBiasStrength( nucleinString );
+		double gcContent = biocodon.getGCContent( nucleinString );
+		double gc1Content = biocodon.getGCContentPos( nucleinString, 0 );
+		double gc2Content = biocodon.getGCContentPos( nucleinString, 1 );
+		double gc3Content = biocodon.getGCContentPos( nucleinString, 2 );
+		double CPS = biocodon.getCodonPairScore( nucleinString );
 		
-		float thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
-		float adeninPerc = biocodon.getAmountOf( 'A', nucleinString );
-		float uracilPerc = biocodon.getAmountOf( 'U', nucleinString );
-		float guaninPerc = biocodon.getAmountOf( 'G', nucleinString );
-		float cytosinPerc = biocodon.getAmountOf( 'C', nucleinString );
+		double thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
+		double adeninPerc = biocodon.getAmountOf( 'A', nucleinString );
+		double uracilPerc = biocodon.getAmountOf( 'U', nucleinString );
+		double guaninPerc = biocodon.getAmountOf( 'G', nucleinString );
+		double cytosinPerc = biocodon.getAmountOf( 'C', nucleinString );
 		
-		float purinPerc = adeninPerc + guaninPerc;
-		float pyrimidinPerc = cytosinPerc + uracilPerc + thyminPerc;
+		double purinPerc = adeninPerc + guaninPerc;
+		double pyrimidinPerc = cytosinPerc + uracilPerc + thyminPerc;
+		
 		
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 34;
@@ -146,6 +152,8 @@ public class menu {
 			header = new Object[] { "Sequence Length", "Adenin", "Uracil", "Guanin", "Cytosin", "Pyrimidinbases", "Purinbases" };
 		}
 		DefaultTableModel model = new DefaultTableModel ( header, 0 );
+		
+		mainConstraint.weighty = 0.3;
 		JTable generalAnalyseData = new JTable( model );
 		model.addRow(new Object[] { 
 				biocodon.getSequenceLength( nucleinString ) + " bases",
@@ -159,6 +167,7 @@ public class menu {
 		);
 		resultDialog.add(new JScrollPane(generalAnalyseData), mainConstraint );
 		
+		mainConstraint.weighty = 0.1;
 		mainConstraint.gridy = 50;
 		JLabel codonfrequencyData = new JLabel("Indices based on codon frequency in a reference set of genes");
 		codonfrequencyData.setFont(new Font("Calibri", Font.BOLD, 20));
@@ -167,6 +176,7 @@ public class menu {
 		mainConstraint.gridy = 52;
 		header = new Object[] { "Index", "Description", "Range", "Value" };
 		model = new DefaultTableModel ( header, 0 );
+		mainConstraint.weighty = 0.3;
 		JTable frequencyDataTable = new JTable( model );
 		model.addRow(new Object[] { 
 				"CAI",
@@ -184,8 +194,58 @@ public class menu {
 		);
 		resultDialog.add(new JScrollPane(frequencyDataTable), mainConstraint );
 		
+		mainConstraint.gridy = 80;
+		mainConstraint.weighty = 0.1;
+		JLabel complexPatternsLabel = new JLabel("Indices based on complex patterns of codon usage");
+		complexPatternsLabel.setFont(new Font("Calibri", Font.BOLD, 20));
+		resultDialog.add( complexPatternsLabel, mainConstraint );
+		
+		mainConstraint.gridy = 82;
+		header = new Object[] { "Index", "Description", "Range", "Value" };
+		model = new DefaultTableModel ( header, 0 );
+		mainConstraint.weighty = 0.5;
+		JTable complexPatternsDataTable = new JTable( model );
+		model.addRow(new Object[] { 
+				"GC",
+				"GC Content",
+				"0~1",
+				String.format("%.2f", gcContent )
+			}
+		);
+		model.addRow(new Object[] { 
+				"GC1",
+				"GC 1 Content",
+				"0~1",
+				String.format("%.2f", gc1Content )
+			}
+		);
+		model.addRow(new Object[] { 
+				"GC2",
+				"GC 2 Content",
+				"0~1",
+				String.format("%.2f", gc2Content )
+			}
+		);
+		model.addRow(new Object[] { 
+				"GC3",
+				"GC 3 Content",
+				"0~1",
+				String.format("%.2f", gc3Content )
+			}
+		);
+		model.addRow(new Object[] { 
+				"CPS",
+				"Codon Pair Score",
+				"-1~1",
+				String.format("%.2f", CPS )
+			}
+		);
+		resultDialog.add(new JScrollPane(complexPatternsDataTable), mainConstraint );
+		
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 100;
+		
+		mainConstraint.weighty = 0.05;
 		
 		JButton saveButton = new JButton("Save Results");
 		resultDialog.add( saveButton, mainConstraint );

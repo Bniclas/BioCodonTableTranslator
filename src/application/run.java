@@ -1,11 +1,10 @@
 package application;
 
 import java.io.FileWriter;
-import java.io.IOException;
 
 public class run {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		
 		/*
 		biocodonencoder.prepare(1);
@@ -25,6 +24,7 @@ public class run {
 		biocodonencoder.encodeDNA( dnaExample );
 		*/
 		
+		ReferenceDataSets.getReferenceDataSet();
 		menu menu = new menu();
 	}
 

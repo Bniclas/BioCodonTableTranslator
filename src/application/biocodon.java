@@ -70,6 +70,33 @@ public class biocodon {
 		add(getStopCodeSign());
 	}};
 	
+	private static final Map<String, String> AminoshortToAminoacid = new HashMap<String, String>() {{
+		put( "*", getStopCodeSign() );
+		put( "A", "Ala" );
+		put( "C", "Cys" );
+		put( "D", "Asp" );
+		put( "E", "Glu" );
+		put( "F", "Phe" );
+		put( "G", "Gly" );
+		put( "H", "His" );
+		put( "I", "Ile" );
+		put( "K", "Lys" );
+		put( "L", "Leu" );
+		put( "M", "Met" );
+		put( "N", "Asn" );
+		put( "P", "Pro" );
+		put( "Q", "Gln" );
+		put( "R", "Arg" );
+		put( "S", "Ser" );
+		put( "T", "Thr" );
+		put( "V", "Val" );
+		put( "W", "Trp" );
+		put( "Y", "Tyr" );
+	}};
+	
+	public static String ShortToAmino( String aminoshort ) {
+		return AminoshortToAminoacid.get( aminoshort );
+	}
 	
 	private static boolean isStopCodon( String triplet ) {
 		if( stopCodonList.get(triplet) != null ) {

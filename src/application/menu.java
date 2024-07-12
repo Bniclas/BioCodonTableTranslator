@@ -117,7 +117,7 @@ public class menu {
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 8;
 		
-		double CodonAdaptionIndex = biocodon.getCodonAdaptationIndex( nucleinString );
+		double CodonAdaptionIndex = ReferenceDataSets.writeCAI( nucleinString );
 		double RelativeCodonBiasStrength = biocodon.getRelativeCodonBiasStrength( nucleinString );
 		double gcContent = biocodon.getGCContent( nucleinString );
 		double gc1Content = biocodon.getGCContentPos( nucleinString, 0 );

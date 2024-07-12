@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Vector;
 
 
 
@@ -85,6 +86,43 @@ public class ReferenceDataSets {
 			AminoacidMostCodedByCodon.put( aminoA, codon );
 		}
 		
+	}
+	
+	public static double getCodonWeight( String codon ) {
+		double weight;
+		
+		double fi = CodonFrequencyReference.get( codon );
+		String aminocoded = CodonToAminoacid.get(codon);
+		String optimalCodon = AminoacidMostCodedByCodon.get( aminocoded );
+		double fj = CodonFrequencyReference.get( optimalCodon );
+		
+		weight = fi / fj;
+		
+		return weight;
+	}
+	
+	public static double writeCAI( String inputString ) {
+		String codonString = biocodon.codonList( inputString );
+		Vector<String> codonVector = biocodon.getCodonTriplets( codonString );
+		double CAI = 0;
+		double L = codonVector.size();
+		double OneDIVbyL = 1.0 / L;
+		
+		for ( int i=0; i<codonVector.size(); i++ ) {
+			double wi = getCodonWeight( codonVector.get(i) );
+			CAI = CAI + Math.log( wi );
+		}
+		
+
+		System.out.println( OneDIVbyL );
+		System.out.println( CAI );
+		CAI = CAI * OneDIVbyL;
+		System.out.println( CAI );
+		CAI = (double) Math.exp( CAI ) - 1;
+		
+		System.out.println( CAI );
+		
+		return CAI;
 	}
 	
 }

@@ -461,6 +461,21 @@ public class biocodon {
 		return tripletVector;
 	}
 	
+	public static Vector<String> getCodonTripletsOnce( String codonString ){
+		Map<String, Boolean> cache = new HashMap<String, Boolean>();
+		Vector<String> codonVector = new Vector<String>();
+		for ( int i=0; i<codonString.length(); i+=3 ) {
+			String codon = codonString.substring( i, i+3 );
+			if ( cache.get( codon ) != null ) {
+				continue;
+			}
+			codonVector.add( codon );
+			cache.put(codon, true);
+		}
+		
+		return codonVector;
+	}
+	
 	public static String nucleinToAmino( String[] args ) {
 		int partCounter = 0;
 		String codon = null;
@@ -807,10 +822,12 @@ public class biocodon {
 		
 			double f_xyz = f_xyz_frequency.get( codon );
 			
+			/*
 			System.out.println( f_xyz );
 			System.out.println( f_x_1 );
 			System.out.println( f_y_2 );
 			System.out.println( f_z_3 );
+			*/
 			
 			value_a = f_xyz / ( f_x_1 * f_y_2 * f_z_3 );
 			value_b = ( f_x_1 * f_y_2 * f_z_3 ) / f_xyz;
@@ -832,8 +849,8 @@ public class biocodon {
 		
 		DCBS = (double) ( DCBS / (double) codonVector.size() );
 		
-		System.out.println( codonVector.size() );
-		System.out.println( DCBS );
+		//System.out.println( codonVector.size() );
+		//System.out.println( DCBS );
 		
 		return DCBS;
 	}

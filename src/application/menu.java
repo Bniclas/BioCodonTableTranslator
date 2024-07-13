@@ -118,12 +118,10 @@ public class menu {
 		mainConstraint.gridy = 8;
 		
 		double CodonAdaptionIndex = ReferenceDataSets.writeCAI( nucleinString );
-		double RelativeCodonBiasStrength = biocodon.getRelativeCodonBiasStrength( nucleinString );
 		double gcContent = biocodon.getGCContent( nucleinString );
 		double gc1Content = biocodon.getGCContentPos( nucleinString, 0 );
 		double gc2Content = biocodon.getGCContentPos( nucleinString, 1 );
 		double gc3Content = biocodon.getGCContentPos( nucleinString, 2 );
-		double CPS = biocodon.getCodonPairScore( nucleinString );
 		double DCBS = biocodon.getDirectionalCodonBiasScore( nucleinString );
 		
 		double thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
@@ -134,6 +132,9 @@ public class menu {
 		
 		double purinPerc = adeninPerc + guaninPerc;
 		double pyrimidinPerc = cytosinPerc + uracilPerc + thyminPerc;
+		
+		ReferenceDataSets.getCodonRSCU( "ATT" );
+		double RSCUGene = ReferenceDataSets.getGeneRSCU( nucleinString );
 		
 		
 		mainConstraint.gridx = 0;
@@ -194,10 +195,10 @@ public class menu {
 			}
 		);
 		model.addRow(new Object[] { 
-				"RCBS",
-				"Relative Codon Bias Strength",
-				"≥0",
-				String.format("%.2f", RelativeCodonBiasStrength )
+				"RSCU",
+				"Relative Synonymous Codon Use",
+				"-1~1",
+				String.format("%.2f", RSCUGene )
 			}
 		);
 		resultDialog.add(new JScrollPane(frequencyDataTable), mainConstraint );
@@ -239,13 +240,6 @@ public class menu {
 				"GC 3 Content",
 				"0~1",
 				String.format("%.2f", gc3Content )
-			}
-		);
-		model.addRow(new Object[] { 
-				"CPS",
-				"Codon Pair Score",
-				"-1~1",
-				String.format("%.2f", CPS )
 			}
 		);
 		resultDialog.add(new JScrollPane(complexPatternsDataTable), mainConstraint );

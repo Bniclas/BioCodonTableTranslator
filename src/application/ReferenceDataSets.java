@@ -88,6 +88,53 @@ public class ReferenceDataSets {
 		
 	}
 	
+	public static double getCodonRSCU( String codon ) {
+		double rscu;
+		double denom = 0;
+		double degeneracy = 0;
+		String codedAminoacid = CodonToAminoacid.get(codon);
+		double frequency = CodonFrequencyReference.get( codon );
+		
+		for ( var entry : CodonToAminoacid.entrySet() ) {
+			String compCodon = entry.getKey();
+			String compAmino = CodonToAminoacid.get(compCodon);
+			
+			if ( !compAmino.equalsIgnoreCase(codedAminoacid) ) {
+				continue;
+			}
+			double compFrequency = CodonFrequencyReference.get( compCodon );
+			++degeneracy;
+			denom = denom + compFrequency;
+		}
+		
+		denom = 1.0 / degeneracy * denom;
+		rscu = frequency / denom;
+		
+		//System.out.println( rscu );
+		
+		return rscu;
+	}
+	
+	public static double getGeneRSCU( String inputString ) {
+		double rscu_gene;
+		String codonString = biocodon.codonList( inputString );
+		Vector<String> codonVector = biocodon.getCodonTriplets( codonString );
+		double L = codonVector.size();
+		double rscu_ij_sum = 0;
+		
+		for ( int i=0; i<L; i++ ) {
+			rscu_ij_sum = rscu_ij_sum + getCodonRSCU( codonVector.get(i) );
+		}
+		
+		System.out.println( rscu_ij_sum );
+		
+		rscu_gene = rscu_ij_sum / L;
+		
+		System.out.println( rscu_gene );
+		
+		return rscu_gene;
+	}
+	
 	public static double getCodonWeight( String codon ) {
 		double weight;
 		
@@ -108,19 +155,19 @@ public class ReferenceDataSets {
 		double L = codonVector.size();
 		double OneDIVbyL = 1.0 / L;
 		
-		for ( int i=0; i<codonVector.size(); i++ ) {
+		for ( int i=0; i<L; i++ ) {
 			double wi = getCodonWeight( codonVector.get(i) );
 			CAI = CAI + Math.log( wi );
 		}
 		
 
-		System.out.println( OneDIVbyL );
-		System.out.println( CAI );
+		//System.out.println( OneDIVbyL );
+		//System.out.println( CAI );
 		CAI = CAI * OneDIVbyL;
-		System.out.println( CAI );
+		//System.out.println( CAI );
 		CAI = (double) Math.exp( CAI ) - 1;
 		
-		System.out.println( CAI );
+		//System.out.println( CAI );
 		
 		return CAI;
 	}

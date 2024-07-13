@@ -14,6 +14,7 @@ public class ReferenceDataSets {
 	private static Map<String, String> CodonToAminoacid = new HashMap<String, String>();
 	private static Map<String, String> AminoacidToCodon = new HashMap<String, String>();
 	private static Map<String, String> AminoacidMostCodedByCodon = new HashMap<String, String>();
+	private static Map<String, Boolean> OptimalCodons = new HashMap<String, Boolean>();
 	
 	
 	public static void addCodonFrequency( String codon, double frequency ) {
@@ -70,20 +71,25 @@ public class ReferenceDataSets {
 			
 			for ( var v2 : CodonFrequencyReference.entrySet() ) {
 				String codonB = v2.getKey();
+				String aminoB = CodonToAminoacid.get(codonB);
 				double f = v2.getValue();
 				
-				if ( !CodonToAminoacid.get(codonA).equalsIgnoreCase( aminoA ) ) {
+				if ( !aminoA.equalsIgnoreCase( aminoB ) ) {
 					continue;
 				}
 				
 				if ( value == -1 ) {
 					value = f;
+					optimalCodon = codonB;
 				}
 				else if ( value < f ) {
+					value = f;
 					optimalCodon = codonB;
 				}
 			}
+
 			AminoacidMostCodedByCodon.put( aminoA, codon );
+			OptimalCodons.put( optimalCodon, true );
 		}
 		
 	}
@@ -170,6 +176,28 @@ public class ReferenceDataSets {
 		//System.out.println( CAI );
 		
 		return CAI;
+	}
+	
+	public static double getFOP( String inputString ) {
+		double FOP;
+		String codonString = biocodon.codonList( inputString );
+		Vector<String> codonVector = biocodon.getCodonTripletsWithoutStop( codonString );
+		double totalCodonsInSequence = codonVector.size();
+		double optimalCodonsInSequence = 0;
+		
+		for ( int i=0; i<totalCodonsInSequence; i++ ) {
+			String codon = codonVector.get(i);
+			if( codon.equalsIgnoreCase("ATG") || codon.equalsIgnoreCase("TGG") ) {
+				continue;
+			}
+			if ( OptimalCodons.get(codon) != null ) {
+				optimalCodonsInSequence = optimalCodonsInSequence + 1;
+			}
+		}
+		
+		FOP = optimalCodonsInSequence / totalCodonsInSequence;
+		
+		return FOP;
 	}
 	
 }

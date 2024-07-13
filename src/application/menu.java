@@ -117,6 +117,8 @@ public class menu {
 		mainConstraint.gridx = 0;
 		mainConstraint.gridy = 8;
 		
+		biocodon.initBaseFrequency( nucleinString );
+		biocodon.getRCAGene( nucleinString );
 		double CodonAdaptionIndex = ReferenceDataSets.writeCAI( nucleinString );
 		double gcContent = biocodon.getGCContent( nucleinString );
 		double gc1Content = biocodon.getGCContentPos( nucleinString, 0 );
@@ -133,8 +135,9 @@ public class menu {
 		double purinPerc = adeninPerc + guaninPerc;
 		double pyrimidinPerc = cytosinPerc + uracilPerc + thyminPerc;
 		
-		ReferenceDataSets.getCodonRSCU( "ATT" );
+		//ReferenceDataSets.getCodonRSCU( "ATT" );
 		double RSCUGene = ReferenceDataSets.getGeneRSCU( nucleinString );
+		double FOP = ReferenceDataSets.getFOP( nucleinString );
 		
 		
 		mainConstraint.gridx = 0;
@@ -180,6 +183,13 @@ public class menu {
 		model = new DefaultTableModel ( header, 0 );
 		mainConstraint.weighty = 0.3;
 		JTable frequencyDataTable = new JTable( model );
+		model.addRow(new Object[] { 
+				"FOP",
+				"Frequency of Optimal Codons",
+				"0~1",
+				String.format("%.2f", FOP )
+			}
+		);
 		model.addRow(new Object[] { 
 				"DCBS",
 				"Directional Codon Bias Score",

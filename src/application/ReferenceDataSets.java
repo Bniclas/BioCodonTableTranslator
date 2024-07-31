@@ -125,11 +125,20 @@ public class ReferenceDataSets {
 		double rscu_gene;
 		String codonString = biocodon.codonList( inputString );
 		Vector<String> codonVector = biocodon.getCodonTriplets( codonString );
+		Map<String, Boolean> codonCache = new HashMap<String, Boolean>();
 		double L = codonVector.size();
 		double rscu_ij_sum = 0;
 		
 		for ( int i=0; i<L; i++ ) {
 			rscu_ij_sum = rscu_ij_sum + getCodonRSCU( codonVector.get(i) );
+			codonCache.put( codonVector.get(i), true );
+		}
+		
+		for ( var entry : CodonFrequencyReference.entrySet() ) {
+			String codon = entry.getKey();
+			if ( codonCache.get(codon) == null ) {
+				rscu_ij_sum = rscu_ij_sum + 0.0001;
+			}
 		}
 		
 		System.out.println( rscu_ij_sum );
@@ -187,7 +196,7 @@ public class ReferenceDataSets {
 		
 		for ( int i=0; i<totalCodonsInSequence; i++ ) {
 			String codon = codonVector.get(i);
-			if( codon.equalsIgnoreCase("ATG") || codon.equalsIgnoreCase("TGG") ) {
+			if( biocodon.isInitCodon(codon) ) {
 				continue;
 			}
 			if ( OptimalCodons.get(codon) != null ) {

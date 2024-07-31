@@ -158,7 +158,7 @@ public class menu {
 		}
 		DefaultTableModel model = new DefaultTableModel ( header, 0 );
 		
-		mainConstraint.weighty = 0.3;
+		mainConstraint.weighty = 0.15;
 		JTable generalAnalyseData = new JTable( model );
 		model.addRow(new Object[] { 
 				biocodon.getSequenceLength( nucleinString ) + " bases",
@@ -181,7 +181,7 @@ public class menu {
 		mainConstraint.gridy = 52;
 		header = new Object[] { "Index", "Description", "Range", "Value" };
 		model = new DefaultTableModel ( header, 0 );
-		mainConstraint.weighty = 0.3;
+		mainConstraint.weighty = 0.45;
 		JTable frequencyDataTable = new JTable( model );
 		model.addRow(new Object[] { 
 				"FOP",
@@ -222,7 +222,7 @@ public class menu {
 		mainConstraint.gridy = 82;
 		header = new Object[] { "Index", "Description", "Range", "Value" };
 		model = new DefaultTableModel ( header, 0 );
-		mainConstraint.weighty = 0.5;
+		mainConstraint.weighty = 0.45;
 		JTable complexPatternsDataTable = new JTable( model );
 		model.addRow(new Object[] { 
 				"GC",

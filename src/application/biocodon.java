@@ -45,7 +45,7 @@ public class biocodon {
 	private static final Map<String , String> initCodonList = new HashMap<String , String>();
 	private static final Map<Integer, Object> overwriteNAbyOrganism = new HashMap<Integer, Object>();
 	private static int selectedTable = 1;
-	private static final Vector<String> Aminoacids = new Vector<String>() {{
+	public static final Vector<String> Aminoacids = new Vector<String>() {{
 		add("Ala");
 		add("Asn");
 		add("Cys");
@@ -149,7 +149,7 @@ public class biocodon {
 		return AminoshortToAminoacid.get( aminoshort );
 	}
 	
-	private static boolean isStopCodon( String triplet ) {
+	public static boolean isStopCodon( String triplet ) {
 		if( stopCodonList.get(triplet) != null ) {
 			return true;
 		} else {
@@ -157,7 +157,7 @@ public class biocodon {
 		}
 	}
 	
-	private static boolean isInitCodon( String triplet ) {
+	public static boolean isInitCodon( String triplet ) {
 		if( initCodonList.get(triplet) != null ) {
 			return true;
 		} else {

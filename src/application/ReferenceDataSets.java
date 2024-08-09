@@ -62,35 +62,40 @@ public class ReferenceDataSets {
 		}
 		
 		fileReader.close();
+	
 		
 		for ( var v1 : AminoacidToCodon.entrySet() ) {
 			String aminoA = v1.getKey();
 			String codonA = v1.getValue();
-			double value = -1;
-			String optimalCodon = "";
+			double frequencyA = CodonFrequencyReference.get( codonA );
 			
 			for ( var v2 : CodonFrequencyReference.entrySet() ) {
 				String codonB = v2.getKey();
 				String aminoB = CodonToAminoacid.get(codonB);
-				double f = v2.getValue();
+				double frequencyB = v2.getValue();
 				
-				if ( !aminoA.equalsIgnoreCase( aminoB ) ) {
-					continue;
-				}
-				
-				if ( value == -1 ) {
-					value = f;
-					optimalCodon = codonB;
-				}
-				else if ( value < f ) {
-					value = f;
-					optimalCodon = codonB;
+				if( aminoB.equalsIgnoreCase( aminoA ) ) {
+					if ( frequencyA > frequencyB ) {
+						if ( AminoacidMostCodedByCodon.get(aminoB) == null ) {
+							AminoacidMostCodedByCodon.put(aminoB, codonA);
+							continue;
+						}
+						if ( CodonFrequencyReference.get( AminoacidMostCodedByCodon.get(aminoB) ) < frequencyA ) {
+							AminoacidMostCodedByCodon.put(aminoA, codonA);
+						}
+					}
+					else {
+						if ( AminoacidMostCodedByCodon.get(aminoB) == null ) {
+							AminoacidMostCodedByCodon.put(aminoB, codonB);
+							continue;
+						}
+					}
 				}
 			}
-
-			AminoacidMostCodedByCodon.put( aminoA, codon );
-			OptimalCodons.put( optimalCodon, true );
 		}
+		
+		System.out.println( AminoacidToCodon );
+		System.out.println( AminoacidMostCodedByCodon );
 		
 	}
 	
@@ -141,12 +146,8 @@ public class ReferenceDataSets {
 			}
 		}
 		
-		System.out.println( rscu_ij_sum );
-		
 		rscu_gene = rscu_ij_sum / L;
-		
-		System.out.println( rscu_gene );
-		
+	
 		return rscu_gene;
 	}
 	
@@ -158,6 +159,8 @@ public class ReferenceDataSets {
 		String optimalCodon = AminoacidMostCodedByCodon.get( aminocoded );
 		double fj = CodonFrequencyReference.get( optimalCodon );
 		
+		//System.out.println( "fi: " + fi + " | fj: " + fj );
+		
 		weight = fi / fj;
 		
 		return weight;
@@ -166,23 +169,22 @@ public class ReferenceDataSets {
 	public static double writeCAI( String inputString ) {
 		String codonString = biocodon.codonList( inputString );
 		Vector<String> codonVector = biocodon.getCodonTriplets( codonString );
-		double CAI = 0;
+		double CAI = -1;
 		double L = codonVector.size();
 		double OneDIVbyL = 1.0 / L;
 		
 		for ( int i=0; i<L; i++ ) {
-			double wi = getCodonWeight( codonVector.get(i) );
-			CAI = CAI + Math.log( wi );
+			double wi = (double) Math.pow( getCodonWeight( codonVector.get(i) ), OneDIVbyL );
+			System.out.println( getCodonWeight( codonVector.get(i) ) );
+			
+			if( CAI == -1) {
+				CAI = wi;
+			}
+			else {
+				CAI = CAI * wi;
+			}
 		}
 		
-
-		//System.out.println( OneDIVbyL );
-		//System.out.println( CAI );
-		CAI = CAI * OneDIVbyL;
-		//System.out.println( CAI );
-		CAI = (double) Math.exp( CAI ) - 1;
-		
-		//System.out.println( CAI );
 		
 		return CAI;
 	}

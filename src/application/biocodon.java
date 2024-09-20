@@ -905,7 +905,6 @@ public class biocodon {
 			RCA = RCA * getRCACodon( codonVector.get(i) );
 		}
 			
-		System.out.println( RCA );
 		return RCA;
 	}
 	

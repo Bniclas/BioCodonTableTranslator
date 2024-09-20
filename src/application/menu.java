@@ -78,7 +78,7 @@ public class menu {
 		
 		JDialog resultDialog = new JDialog();
 		resultDialog.setTitle("Analyse results");
-		Image icon = Toolkit.getDefaultToolkit().getImage("ressources/menuicon.png");    
+		Image icon = Toolkit.getDefaultToolkit().getImage("ressources/dna_logo_01.png");    
 		resultDialog.setIconImage(icon);    
 		resultDialog.setSize( (int)width, (int)height);
 		resultDialog.setLocationRelativeTo(null);
@@ -172,6 +172,7 @@ public class menu {
 		);
 		resultDialog.add(new JScrollPane(generalAnalyseData), mainConstraint );
 		
+		/*
 		mainConstraint.weighty = 0.1;
 		mainConstraint.gridy = 50;
 		JLabel codonfrequencyData = new JLabel("Indices based on codon frequency in a reference set of genes");
@@ -212,6 +213,7 @@ public class menu {
 			}
 		);
 		resultDialog.add(new JScrollPane(frequencyDataTable), mainConstraint );
+		*/
 		
 		mainConstraint.gridy = 80;
 		mainConstraint.weighty = 0.1;
@@ -258,9 +260,10 @@ public class menu {
 		mainConstraint.gridy = 100;
 		
 		mainConstraint.weighty = 0.05;
-		
+		/*
 		JButton saveButton = new JButton("Save Results");
 		resultDialog.add( saveButton, mainConstraint );
+		*/
 	    
 		resultDialog.setVisible( true );
 	}
@@ -304,7 +307,7 @@ public class menu {
 		menu = new JFrame("Biocodon");
 		menu.setSize( (int)width, (int)height);
 		menu.setLocationRelativeTo(null);
-		Image icon = Toolkit.getDefaultToolkit().getImage("ressources/menuicon.png");    
+		Image icon = Toolkit.getDefaultToolkit().getImage("ressources/dna_logo_01.png");    
 		menu.setIconImage(icon);    
 		
 	    GridBagLayout mainBagLayout = new GridBagLayout();
@@ -344,10 +347,12 @@ public class menu {
 		translationLabel.setFont(new Font("Calibri", Font.BOLD, 20));
 		leftMainPanel.add( translationLabel, leftConstraint );
 		
+		/*
 		leftConstraint.gridx = 1;
 		JLabel organismLabel = new JLabel("Select Organism Reference Set");
 		organismLabel.setFont(new Font("Calibri", Font.BOLD, 20));
 		leftMainPanel.add( organismLabel, leftConstraint );
+		*/
 		
 		leftConstraint.gridx = 0;
 		leftConstraint.gridy = 10;
@@ -366,10 +371,12 @@ public class menu {
 		    }
 		});
 		leftMainPanel.add(chooseTranslationTable, leftConstraint);
-		
+	
+		/*
 		leftConstraint.gridx = 1;
 		chooseOrganismReference = new JComboBox();
 		leftMainPanel.add(chooseOrganismReference, leftConstraint);
+		*/
 		
 		leftConstraint.gridwidth = 2;
 		leftConstraint.gridx = 0;

@@ -94,8 +94,8 @@ public class ReferenceDataSets {
 			}
 		}
 		
-		System.out.println( AminoacidToCodon );
-		System.out.println( AminoacidMostCodedByCodon );
+		//System.out.println( AminoacidToCodon );
+		//System.out.println( AminoacidMostCodedByCodon );
 		
 	}
 	
@@ -175,7 +175,7 @@ public class ReferenceDataSets {
 		
 		for ( int i=0; i<L; i++ ) {
 			double wi = (double) Math.pow( getCodonWeight( codonVector.get(i) ), OneDIVbyL );
-			System.out.println( getCodonWeight( codonVector.get(i) ) );
+			//System.out.println( getCodonWeight( codonVector.get(i) ) );
 			
 			if( CAI == -1) {
 				CAI = wi;

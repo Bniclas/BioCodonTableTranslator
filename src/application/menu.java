@@ -118,13 +118,13 @@ public class menu {
 		mainConstraint.gridy = 8;
 		
 		biocodon.initBaseFrequency( nucleinString );
-		biocodon.getRCAGene( nucleinString );
+		//biocodon.getRCAGene( nucleinString );
 		double CodonAdaptionIndex = ReferenceDataSets.writeCAI( nucleinString );
 		double gcContent = biocodon.getGCContent( nucleinString );
 		double gc1Content = biocodon.getGCContentPos( nucleinString, 0 );
 		double gc2Content = biocodon.getGCContentPos( nucleinString, 1 );
 		double gc3Content = biocodon.getGCContentPos( nucleinString, 2 );
-		double DCBS = biocodon.getDirectionalCodonBiasScore( nucleinString );
+		//double DCBS = biocodon.getDirectionalCodonBiasScore( nucleinString );
 		
 		double thyminPerc = biocodon.getAmountOf( 'T', nucleinString );
 		double adeninPerc = biocodon.getAmountOf( 'A', nucleinString );
@@ -136,8 +136,8 @@ public class menu {
 		double pyrimidinPerc = cytosinPerc + uracilPerc + thyminPerc;
 		
 		//ReferenceDataSets.getCodonRSCU( "ATT" );
-		double RSCUGene = ReferenceDataSets.getGeneRSCU( nucleinString );
-		double FOP = ReferenceDataSets.getFOP( nucleinString );
+		//double RSCUGene = ReferenceDataSets.getGeneRSCU( nucleinString );
+		//double FOP = ReferenceDataSets.getFOP( nucleinString );
 		
 		
 		mainConstraint.gridx = 0;

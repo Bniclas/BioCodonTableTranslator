@@ -15,3 +15,8 @@ You can insert a string of codons into to the textfield or input a filepath and 
 * UI Updates
 * Performance Optimization
 * Better documentation
+
+##Preview
+
+![img](https://raw.githubusercontent.com/Bniclas/BioCodonTableTranslator/refs/heads/main/images/menu_01.png)
+![img](https://raw.githubusercontent.com/Bniclas/BioCodonTableTranslator/refs/heads/main/images/menu_02.png)

@@ -1,18 +1,17 @@
-# BioCodon-Encoder
+# Biocodon Translator
 
-## DNA Codon Table
+## About the project
+You can insert a string of codons into to the textfield or input a filepath and press 'Analyse'. Then the program will output you some information about the Codons and the coded aminoacids.
 
-<img src="https://github.com/Bniclas/BioCodon-Encoder/blob/main/images/dna_codon_table.png?raw=true" width="500" height="400">
+## Introduction
+> [!NOTE]
+> Choose your organism template to preset some values
+> Change some values manual if you need to (Select STOP or START Codons)
+> Click 'Analyse' and see your results
 
-## RNA Codon Table
-<img src="https://github.com/Bniclas/BioCodon-Encoder/blob/main/images/rna_codon_table.png?raw=true" width="500" height="400">
+## Planned for the future
 
-## Special Genetic Codes
-<img src="https://github.com/Bniclas/BioCodon-Encoder/blob/main/images/special_genetic_codes_part_01.png?raw=true" width="500" height="400">
-<img src="https://github.com/Bniclas/BioCodon-Encoder/blob/main/images/special_genetic_codes_part_02.png?raw=true" width="500" height="400">
-<img src="https://github.com/Bniclas/BioCodon-Encoder/blob/main/images/special_genetic_codes_part_03.png?raw=true" width="500" height="400">
-
-
-## Sources
-
-[Genetic Code](https://en.wikipedia.org/wiki/DNA_and_RNA_codon_tables)
+* Further codon analyses ( more indices )
+* UI Updates
+* Performance Optimization
+* Better documentation

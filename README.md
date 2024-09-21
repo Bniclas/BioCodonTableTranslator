@@ -5,9 +5,9 @@ You can insert a string of codons into to the textfield or input a filepath and 
 
 ## Introduction
 > [!NOTE]
-> Choose your organism template to preset some values
-> Change some values manual if you need to (Select STOP or START Codons)
-> Click 'Analyse' and see your results
+> * Choose your organism template to preset some values
+> * Change some values manual if you need to (Select STOP or START Codons)
+> * Click 'Analyse' and see your results
 
 ## Planned for the future
 
